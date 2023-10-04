@@ -9,12 +9,12 @@ import Foundation
 import Photos
 
 class PhotoHelper {
-    static func createNewPhotoAlbum() {
+    static func createNewPhotoAlbum(albumName: String) {
         PHPhotoLibrary.requestAuthorization { status in
             if status == .authorized {
                 PHPhotoLibrary.shared().performChanges({
                     // Create a new album
-                    let albumCreationRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: "My New Album")
+                    let albumCreationRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
                     
                     // Get the newly created album
                     let newAlbumPlaceholder = albumCreationRequest.placeholderForCreatedAssetCollection
@@ -28,7 +28,7 @@ class PhotoHelper {
                 }, completionHandler: { success, error in
                     if success {
                         // The album was created successfully
-                        print("Album created successfully")
+                        print("Album '\(albumName)' created successfully")
                     } else {
                         // Handle the error
                         print("Error creating album: \(error?.localizedDescription ?? "Unknown Error")")
@@ -41,4 +41,21 @@ class PhotoHelper {
         }
 
     }
+    
+    func handleTap(for index: Int) {
+            switch index {
+            case 0:
+                // Handle tap for the first item
+                print("Tapped Item 1")
+            case 1:
+                // Handle tap for the second item
+                print("Tapped Item 2")
+            case 2:
+                // Handle tap for the third item
+                print("Tapped Item 3")
+            default:
+                break
+            }
+        }
+    
 }

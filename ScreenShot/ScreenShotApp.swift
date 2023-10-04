@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct ScreenShotApp: App {
+//    @State public var isTextFieldVisible = false
+//    @State public var enteredText = ""
     var body: some Scene {
         WindowGroup {
             ContentView()
