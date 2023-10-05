@@ -8,6 +8,11 @@
 import Foundation
 import Photos
 
+// To-do: Keep a text list of screenshots created with this app
+//        Check if potential album name already exists, cancel if so
+//        In general, app should detect screenshot, place path to SR
+//        in memory for easy retrieval
+
 class PhotoHelper {
     static func createNewPhotoAlbum(albumName: String) {
         PHPhotoLibrary.requestAuthorization { status in
@@ -40,6 +45,24 @@ class PhotoHelper {
             }
         }
 
+    }
+    
+    // Return path to most recent photo
+    static func fetchMostRecentPhoto() -> String {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        fetchOptions.fetchLimit = 1
+        
+        let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
+        
+        if let mostRecentPhoto = fetchResult.firstObject {
+            print("Most recent photo found: \(mostRecentPhoto.localIdentifier)")
+            return mostRecentPhoto.localIdentifier
+        } else {
+            print("No photos found or access denied")
+            return "nil" // This should not happen
+        }
+        
     }
     
     func handleTap(for index: Int) {

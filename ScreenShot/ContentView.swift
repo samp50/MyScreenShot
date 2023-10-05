@@ -20,12 +20,17 @@ struct ContentView: View {
                 .padding(.top, 20)
 
             VStack(spacing: 10) {
-                CircleView()
+                // Placeholder 1
+                CircleView().onTapGesture {
+                    
+                }
+                // Placeholder 2
+                CircleView().onTapGesture {
+                    
+                }
+                // Placeholder 3
                 CircleView().onTapGesture {
                     isAlertViewVisible = true
-                }
-                CircleView().onTapGesture {
-                    //PhotoHelper.createNewPhotoAlbum()
                 }
             }
             .padding(.trailing, 20)

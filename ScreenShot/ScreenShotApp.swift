@@ -9,8 +9,7 @@ import SwiftUI
 
 @main
 struct ScreenShotApp: App {
-//    @State public var isTextFieldVisible = false
-//    @State public var enteredText = ""
+    let beginScreenshotDetection = ScreenshotDetectionManager.shared
     var body: some Scene {
         WindowGroup {
             ContentView()
