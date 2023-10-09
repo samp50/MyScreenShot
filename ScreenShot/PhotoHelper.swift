@@ -7,6 +7,7 @@
 
 import Foundation
 import Photos
+import UIKit
 
 // To-do: Keep a text list of screenshots created with this app
 //        Check if potential album name already exists, cancel if so
@@ -20,15 +21,7 @@ class PhotoHelper {
                 PHPhotoLibrary.shared().performChanges({
                     // Create a new album
                     let albumCreationRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
-                    
-                    // Get the newly created album
                     let newAlbumPlaceholder = albumCreationRequest.placeholderForCreatedAssetCollection
-                    
-                    // Add assets to the album if needed
-                    // For example, you can add photos to the album using:
-                    // let assets = [PHAsset]() // An array of PHAssets to add
-                    // let albumChangeRequest = PHAssetCollectionChangeRequest(for: newAlbumPlaceholder)
-                    // albumChangeRequest?.addAssets(assets as NSFastEnumeration)
                     
                 }, completionHandler: { success, error in
                     if success {
@@ -47,8 +40,61 @@ class PhotoHelper {
 
     }
     
+    public func imageFromAsset(asset: PHAsset) -> UIImage? {
+        let imageManager = PHImageManager.default()
+        let requestOptions = PHImageRequestOptions()
+        requestOptions.isSynchronous = false
+        requestOptions.deliveryMode = .highQualityFormat
+
+        var resultImage: UIImage?
+
+        // Use a semaphore to make the request synchronous
+        let semaphore = DispatchSemaphore(value: 0)
+
+        imageManager.requestImage(for: asset, targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight), contentMode: .aspectFit, options: requestOptions) { (image, info) in
+            resultImage = image
+            semaphore.signal()
+        }
+
+        // Wait for the request to complete
+        semaphore.wait()
+
+        return resultImage
+    }
+    
+    static func getUIImage(asset: PHAsset, completion: @escaping (UIImage?) -> Void) {
+        let imageManager = PHImageManager.default()
+        let requestOptions = PHImageRequestOptions()
+        requestOptions.isSynchronous = false
+        requestOptions.deliveryMode = .highQualityFormat
+
+        imageManager.requestImage(for: asset, targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight), contentMode: .aspectFit, options: requestOptions) { (image, info) in
+            completion(image)
+        }
+    }
+    
+    static func addPhotoToAlbum(fetchResult: PHFetchResult<PHAsset>, albumName: String) {
+        struct Album {
+            var name: String
+            var images: [UIImage]
+        }
+        var myAlbum = Album(name: albumName, images: [])
+        //myAlbum.images.append(mostRecentPhoto!)
+        //return true
+        
+        let albumFetchResult = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [albumName], options: nil)
+        
+        if let album = albumFetchResult.firstObject {
+            PHPhotoLibrary.shared().performChanges {
+                let assetChangeRequest = PHAssetCollectionChangeRequest(for: album)
+                assetChangeRequest?.addAssets(fetchResult)
+            }
+        }
+    }
+    
+    
     // Return path to most recent photo
-    static func fetchMostRecentPhoto() -> String {
+    static func fetchMostRecentPhoto() -> PHFetchResult<PHAsset>? {
         let fetchOptions = PHFetchOptions()
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         fetchOptions.fetchLimit = 1
@@ -57,10 +103,12 @@ class PhotoHelper {
         
         if let mostRecentPhoto = fetchResult.firstObject {
             print("Most recent photo found: \(mostRecentPhoto.localIdentifier)")
-            return mostRecentPhoto.localIdentifier
+            var mostRecentAsset = PHAsset.fetchAssets(withLocalIdentifiers: [mostRecentPhoto.localIdentifier], options: nil)
+            return mostRecentAsset
         } else {
             print("No photos found or access denied")
-            return "nil" // This should not happen
+            //return "nil" // This should not happen
+            return nil
         }
         
     }

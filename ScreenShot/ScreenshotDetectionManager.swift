@@ -23,6 +23,7 @@ class ScreenshotDetectionManager {
     @objc private func screenshotDetected() {
         // Handle screenshot detection here
         print("Screenshot taken!")
-        PhotoHelper.fetchMostRecentPhoto()
+        let mostRecentAsset = PhotoHelper.fetchMostRecentPhoto()
+        PhotoHelper.addPhotoToAlbum(fetchResult: mostRecentAsset!, albumName: "Newsom")
     }
 }
