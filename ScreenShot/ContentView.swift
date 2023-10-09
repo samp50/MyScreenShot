@@ -6,18 +6,11 @@ struct ContentView: View {
     @State private var isShowing = false
     
     var body: some View {
-        DisappearingView()
-        /*
         if screenshotDetector.isScreenshotDetected {
-            Text("This view will disappear after 3 seconds.")
-                .padding()
+            DisappearingWidgetView()
         } else {
-            // Show the regular content when no screenshot is detected
-            Text("Regular Content")
-                .font(.largeTitle)
-                .foregroundColor(.blue)
+            TextBoxView()
         }
-         */
     }
     
     struct ContentView_Previews: PreviewProvider {
@@ -27,13 +20,11 @@ struct ContentView: View {
         }
     }
     
-    struct DisappearingView: View {
+    struct DisappearingWidgetView: View {
         @State private var isShowing = true
-
         var body: some View {
             if isShowing {
-                Text("This view will disappear after 3 seconds.")
-                    .padding()
+                WidgetView()
                     .onAppear {
                         // Start a timer to hide the view after 3 seconds
                         Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { _ in
@@ -55,6 +46,7 @@ struct ContentView: View {
                 .foregroundColor(.blue)
                 .padding(.trailing, 20)
                 .padding(.top, 20)
+    
             
             VStack(spacing: 10) {
                 // Placeholder 1
