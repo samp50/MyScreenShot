@@ -10,7 +10,7 @@ import SwiftUI
 
 @main
 struct ScreenShotApp: App {
-    let beginScreenshotDetection = ScreenshotDetectionManager.shared
+    //let beginScreenshotDetection = ScreenshotDetectionManager.shared
     @StateObject var screenshotDetector = ScreenshotDetector()
     var body: some Scene {
         WindowGroup {
