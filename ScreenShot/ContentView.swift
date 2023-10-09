@@ -1,43 +1,79 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isTextFieldVisible = false
-    @State private var isAlertViewVisible = false
-    var body: some View {
-        ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
-            if (isTextFieldVisible) {
-                //TextBoxView()
-            }
-            if (isAlertViewVisible) {
-                AlertView()
-            }
-            Rectangle()
-                .frame(width: UIScreen.main.bounds.width / 5, height: UIScreen.main.bounds.height / 5)
-                .cornerRadius(20)
-                .foregroundColor(.blue)
-                .padding(.trailing, 20)
-                .padding(.top, 20)
+    @EnvironmentObject var screenshotDetector: ScreenshotDetector
 
-            VStack(spacing: 10) {
-                // Placeholder 1
-                CircleView().onTapGesture {
-                    
-                }
-                // Placeholder 2
-                CircleView().onTapGesture {
-                    
-                }
-                // Placeholder 3
-                CircleView().onTapGesture {
-                    isAlertViewVisible = true
-                }
-            }
-            .padding(.trailing, 20)
-            .padding(.top, 20)
+    var body: some View {
+        if screenshotDetector.isScreenshotDetected {
+            // Show a different view when a screenshot is detected
+            Text("Screenshot Detected!")
+                .font(.largeTitle)
+                .foregroundColor(.red)
+        } else {
+            // Show the regular content when no screenshot is detected
+            Text("Regular Content")
+                .font(.largeTitle)
+                .foregroundColor(.blue)
         }
     }
 }
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .environmentObject(ScreenshotDetector())
+    }
+}
+
+/*
+struct ContentView: View {
+    @State private var isTextFieldVisible = false
+    @State private var showScreenshotView = false
+    
+    var body: some View {
+        ZStack {
+            Color.white.edgesIgnoringSafeArea(.all)
+            if (screenShotDetected) {
+                WidgetView()
+            }
+            if (isTextFieldVisible) {
+                //TextBoxView()
+            }
+            //if (isAlertViewVisible) {
+                //AlertView()
+            //}
+        }
+    }
+}
+*/
+struct WidgetView: View {
+    @State private var isAlertViewVisible = false
+    var body: some View {
+        Rectangle()
+            .frame(width: UIScreen.main.bounds.width / 5, height: UIScreen.main.bounds.height / 5)
+            .cornerRadius(20)
+            .foregroundColor(.blue)
+            .padding(.trailing, 20)
+            .padding(.top, 20)
+
+        VStack(spacing: 10) {
+            // Placeholder 1
+            CircleView().onTapGesture {
+                
+            }
+            // Placeholder 2
+            CircleView().onTapGesture {
+                
+            }
+            // Placeholder 3
+            CircleView().onTapGesture {
+                isAlertViewVisible = true
+            }
+        }
+        .padding(.trailing, 20)
+        .padding(.top, 20)
+        }
+    }
 
 struct CircleView: View {
     var body: some View {
@@ -84,9 +120,6 @@ struct AlertView: View {
         }
     }
 }*/
-
-
-
 
 struct TextBoxView: View {
     @State public var enteredText = ""

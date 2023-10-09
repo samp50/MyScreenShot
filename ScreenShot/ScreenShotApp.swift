@@ -6,13 +6,15 @@
 //
 
 import SwiftUI
+//public var screenShotDetected: Bool = false
 
 @main
 struct ScreenShotApp: App {
     let beginScreenshotDetection = ScreenshotDetectionManager.shared
+    @StateObject var screenshotDetector = ScreenshotDetector()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environmentObject(screenshotDetector) // Pass the detector to ContentView
         }
     }
 }

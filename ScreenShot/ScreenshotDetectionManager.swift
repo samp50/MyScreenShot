@@ -7,6 +7,8 @@
 
 import UIKit
 
+public var screenShotDetected: Bool = false
+
 class ScreenshotDetectionManager {
     static let shared = ScreenshotDetectionManager()
     
@@ -23,7 +25,10 @@ class ScreenshotDetectionManager {
     @objc private func screenshotDetected() {
         // Handle screenshot detection here
         print("Screenshot taken!")
+        // Show our widget view only when screenshot taken
+        screenShotDetected = true
+        print("screenShotDetected: \(screenShotDetected)")
         let mostRecentAsset = PhotoHelper.fetchMostRecentPhoto()
-        PhotoHelper.addPhotoToAlbum(fetchResult: mostRecentAsset!, albumName: "Newsom")
+        PhotoHelper.addPhotoToAlbum(fetchResult: mostRecentAsset!, albumName: "Newsom") // not working!
     }
 }
