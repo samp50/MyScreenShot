@@ -4,12 +4,13 @@ import Foundation
 struct ContentView: View {
     @EnvironmentObject var screenshotDetector: ScreenshotDetector
     @State private var isShowing = false
+    @State private var isAnimating = false
     
     var body: some View {
         if screenshotDetector.isScreenshotDetected {
             DisappearingWidgetView()
         } else {
-            TextBoxView()
+            TextView()
         }
     }
     
@@ -21,13 +22,15 @@ struct ContentView: View {
     }
     
     struct DisappearingWidgetView: View {
+        @State private var isAnimating = true
         @State private var isShowing = true
         var body: some View {
             if isShowing {
                 WidgetView()
-                    .onAppear {
-                        // Start a timer to hide the view after 3 seconds
-                        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { _ in
+                    .animation(.easeInOut(duration: 3.0))
+                    .opacity(isAnimating ? 1.0 : 0.2)
+                    .onAppear { // make sure to stop+reset timer when user is interacting with widget
+                        Timer.scheduledTimer(withTimeInterval: 7.0, repeats: false) { _ in
                             withAnimation {
                                 isShowing = false
                             }
@@ -46,7 +49,6 @@ struct ContentView: View {
                 .foregroundColor(.blue)
                 .padding(.trailing, 20)
                 .padding(.top, 20)
-    
             
             VStack(spacing: 10) {
                 // Placeholder 1
@@ -103,32 +105,36 @@ struct ContentView: View {
         }
     }
     
-    
-    /*struct AlertView: View {
-     @State private var showingAlert = false
-     var body: some View {
-     Alert("Important message") {
-     Button("OK", role: .cancel) { }
-     }
-     }
-     }*/
-    
-    struct TextBoxView: View {
-        @State public var enteredText = ""
+    struct TextView: View {
         var body: some View {
-            Rectangle()
-                .fill(Color.white)
-                .frame(width: 300, height: 100)
+            Text("Fading View")
+                .padding()
+                .foregroundColor(.white)
+                .background(Color.blue)
                 .cornerRadius(10)
-                .shadow(radius: 5)
-                .overlay(
-                    VStack {
-                        TextField("Enter text", text: $enteredText)
-                            .padding()
+//                .animation(.easeInOut(duration: 5)) // not working
+        }
+    }
+    
+    struct ExampleAnimationView: View {
+        @State private var isAnimating = false // A state variable to control the animation
+
+        var body: some View {
+            VStack {
+                Circle()
+                    .frame(width: 100, height: 100)
+                    .foregroundColor(.blue)
+                    .opacity(isAnimating ? 1.0 : 0.2) // Change opacity based on state
+                    .scaleEffect(isAnimating ? 1.5 : 1.0) // Change scale based on state
+                    .rotationEffect(isAnimating ? .degrees(45) : .degrees(0)) // Change rotation based on state
+                    //.animation(.easeInOut(duration: 5.0)) // Apply animation to the view
+
+                Button("Animate") {
+                    withAnimation {
+                        self.isAnimating.toggle() // Toggle animation with smooth transitions
                     }
-                )
-                .zIndex(1) // Bring the popup to the front
-                .transition(.scale)
+                }
+            }
         }
     }
     
