@@ -11,7 +11,7 @@ struct ContentView: View {
             ColorChangeView() // timer is in this function!
                 .onTapGesture {
                     // reset the timer
-                    //TimerManager().resetTimer()
+                    // ScreenshotDetector().resetTimer()
                 }
         }
     }

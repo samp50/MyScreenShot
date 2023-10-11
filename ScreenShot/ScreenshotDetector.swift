@@ -31,17 +31,30 @@ class ScreenshotDetector: ObservableObject {
             print("Timer fired!")
             self.isScreenshotDetected = false
         }*/
-        startTimer()
+        startTimerOriginal()
     }
     
     var timer: Timer?
     var elapsedTime: TimeInterval = 4.0
     var isRunning = false
     
+    func displayWidgetTESTER() { //del!
+        showWidget = true
+    }
+    
+    func startTimerOriginal() {
+        showWidget = true
+        let timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
+            // Callback for widget onTap?
+            print("Timer fired!")
+            self.showWidget = false
+        }
+    }
+    
     func startTimer() {
         // Still needs animation
+        showWidget = true
         if !isRunning {
-            self.showWidget = true
             timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
                 self.elapsedTime += 1
                 self.showWidget = false
