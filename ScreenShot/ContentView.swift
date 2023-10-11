@@ -6,10 +6,9 @@ struct ContentView: View {
     @State private var isShowing = false
     
     var body: some View {
+        HomeView()
         if screenshotDetector.isScreenshotDetected {
             DisappearingWidgetView()
-        } else {
-            TextBoxView()
         }
     }
     
@@ -24,7 +23,7 @@ struct ContentView: View {
         @State private var isShowing = true
         var body: some View {
             if isShowing {
-                WidgetView()
+                ColorChangeView()
                     .onAppear {
                         // Start a timer to hide the view after 3 seconds
                         Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { _ in
@@ -34,6 +33,46 @@ struct ContentView: View {
                         }
                     }
             }
+        }
+    }
+    
+    struct ColorChangeView: View {
+        @State private var circleColors: [Color] = [.red, .green, .blue]
+        
+        var body: some View {
+            ZStack {
+                Rectangle()
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(width: 100, height: 150)
+                    .position(x: UIScreen.main.bounds.width - 50, y: 75)
+                    .gesture(
+                        TapGesture()
+                            .onEnded { _ in
+                                // Rotate the colors of the circles
+                                let lastColor = circleColors.popLast()
+                                circleColors.insert(lastColor ?? .red, at: 0)
+                            }
+                    )
+                
+                VStack(spacing: 20) {
+                    ForEach(0..<3, id: \.self) { index in
+                        Circle()
+                            .fill(circleColors[index])
+                            .frame(width: 50, height: 50)
+                            .onTapGesture {
+                                // Change the color of the tapped circle
+                                withAnimation {
+                                    circleColors[index] = getRandomColor()
+                                }
+                            }
+                    }
+                }
+            }
+        }
+        
+        private func getRandomColor() -> Color {
+            let colors: [Color] = [.red, .green, .blue, .orange, .purple, .pink]
+            return colors.randomElement() ?? .gray
         }
     }
     
@@ -113,22 +152,9 @@ struct ContentView: View {
      }
      }*/
     
-    struct TextBoxView: View {
-        @State public var enteredText = ""
+    struct HomeView: View {
         var body: some View {
-            Rectangle()
-                .fill(Color.white)
-                .frame(width: 300, height: 100)
-                .cornerRadius(10)
-                .shadow(radius: 5)
-                .overlay(
-                    VStack {
-                        TextField("Enter text", text: $enteredText)
-                            .padding()
-                    }
-                )
-                .zIndex(1) // Bring the popup to the front
-                .transition(.scale)
+            Text("Take a screenshot!")
         }
     }
     

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 // ObservableObject to detect and store screenshot status
 class ScreenshotDetector: ObservableObject {
@@ -21,5 +22,10 @@ class ScreenshotDetector: ObservableObject {
         // Screenshot detected, update the variable
         print("screenshotTaken variable called")
         isScreenshotDetected = true
+        let timer = Timer.scheduledTimer(withTimeInterval: 7.0, repeats: false) { timer in
+            // This closure will be called every 2 seconds
+            print("Timer fired!")
+            self.isScreenshotDetected = false
+        }
     }
 }
