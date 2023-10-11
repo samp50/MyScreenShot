@@ -10,9 +10,10 @@ import Foundation
 
 // ObservableObject to detect and store screenshot status
 class ScreenshotDetector: ObservableObject {
+    @EnvironmentObject var screenshotDetector: ScreenshotDetector
     // Published property to track screenshot detection
     @Published var isScreenshotDetected = false
-    @Published var timerFired = false
+    @Published var showWidget = false
     
     init() {
         // Add an observer for screenshot notifications
@@ -24,11 +25,44 @@ class ScreenshotDetector: ObservableObject {
         print("screenshotTaken variable called")
         isScreenshotDetected = true
         // Make this timer public so it can be reset from logic in ContentView
-        //TimerManager().startTimer()
-        let timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
-            // This closure will be called every 2 seconds
+        // Delete block below when showWidget variable works
+        /*let timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
+            // Callback for widget onTap?
             print("Timer fired!")
             self.isScreenshotDetected = false
+        }*/
+        startTimer()
+    }
+    
+    var timer: Timer?
+    var elapsedTime: TimeInterval = 4.0
+    var isRunning = false
+    
+    func startTimer() {
+        // Still needs animation
+        if !isRunning {
+            self.showWidget = true
+            timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
+                self.elapsedTime += 1
+                self.showWidget = false
+            }
+            isRunning = true
+            print("Started timer")
         }
+    }
+    
+    func stopTimer() {
+        if isRunning {
+            timer?.invalidate()
+            timer = nil
+            isRunning = false
+            showWidget = false
+        }
+    }
+    
+    func resetTimer() {
+        stopTimer()
+        elapsedTime = 0
+        print("Reset timer")
     }
 }

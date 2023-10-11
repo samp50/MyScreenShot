@@ -7,7 +7,7 @@
 
 import Foundation
 
-
+// manipulate visibility from here
 class TimerManager {
     var timer: Timer?
     var elapsedTime: TimeInterval = 4.0

@@ -3,14 +3,15 @@ import Foundation
 
 struct ContentView: View {
     @EnvironmentObject var screenshotDetector: ScreenshotDetector
-    @State private var isShowing = false
+    //@State private var isShowing = false
     
     var body: some View {
         HomeView() // instructions for taking screenshot + animated, live action background
-        if screenshotDetector.isScreenshotDetected {
-            DisappearingWidgetView() // timer is in this function!
+        if screenshotDetector.showWidget {
+            ColorChangeView() // timer is in this function!
                 .onTapGesture {
-                    
+                    // reset the timer
+                    //TimerManager().resetTimer()
                 }
         }
     }
