@@ -6,9 +6,12 @@ struct ContentView: View {
     @State private var isShowing = false
     
     var body: some View {
-        HomeView()
+        HomeView() // instructions for taking screenshot + animated, live action background
         if screenshotDetector.isScreenshotDetected {
-            DisappearingWidgetView()
+            DisappearingWidgetView() // timer is in this function!
+                .onTapGesture {
+                    
+                }
         }
     }
     
@@ -85,7 +88,7 @@ struct ContentView: View {
                 .foregroundColor(.blue)
                 .padding(.trailing, 20)
                 .padding(.top, 20)
-    
+            
             
             VStack(spacing: 10) {
                 // Placeholder 1
@@ -141,16 +144,6 @@ struct ContentView: View {
             .padding()
         }
     }
-    
-    
-    /*struct AlertView: View {
-     @State private var showingAlert = false
-     var body: some View {
-     Alert("Important message") {
-     Button("OK", role: .cancel) { }
-     }
-     }
-     }*/
     
     struct HomeView: View {
         var body: some View {
