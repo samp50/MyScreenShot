@@ -1,3 +1,4 @@
+/*
 //
 //  ScreenshotDetector.swift
 //  ScreenShot
@@ -14,6 +15,7 @@ class ScreenshotDetector: ObservableObject {
     // Published property to track screenshot detection
     @Published var isScreenshotDetected = false
     @Published var showWidget = false
+    @Published var widgetTapped = false
     
     init() {
         // Add an observer for screenshot notifications
@@ -21,20 +23,13 @@ class ScreenshotDetector: ObservableObject {
     }
     
     @objc func screenshotTaken() {
-        // Screenshot detected, update the variable
         print("screenshotTaken variable called")
         isScreenshotDetected = true
-        // Make this timer public so it can be reset from logic in ContentView
-        // Delete block below when showWidget variable works
-        /*let timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
-            // Callback for widget onTap?
-            print("Timer fired!")
-            self.isScreenshotDetected = false
-        }*/
         startTimerOriginal()
     }
     
     var timer: Timer?
+    var globalTimer: Timer?
     var elapsedTime: TimeInterval = 4.0
     var isRunning = false
     
@@ -43,39 +38,28 @@ class ScreenshotDetector: ObservableObject {
     }
     
     func startTimerOriginal() {
+        print("called startTimerOriginal")
         showWidget = true
-        let timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
+        let globalTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
             // Callback for widget onTap?
-            print("Timer fired!")
             self.showWidget = false
-        }
-    }
-    
-    func startTimer() {
-        // Still needs animation
-        showWidget = true
-        if !isRunning {
-            timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
-                self.elapsedTime += 1
-                self.showWidget = false
-            }
-            isRunning = true
-            print("Started timer")
         }
     }
     
     func stopTimer() {
         if isRunning {
-            timer?.invalidate()
-            timer = nil
+            globalTimer?.invalidate()
+            globalTimer = nil
             isRunning = false
-            showWidget = false
         }
     }
     
     func resetTimer() {
-        stopTimer()
-        elapsedTime = 0
-        print("Reset timer")
+        print("called resetTimer")
+        globalTimer?.invalidate()
+        globalTimer = nil
+        isRunning = false
+        startTimerOriginal()
     }
 }
+*/

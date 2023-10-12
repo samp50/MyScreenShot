@@ -2,27 +2,24 @@ import SwiftUI
 import Foundation
 
 struct ContentView: View {
-    @EnvironmentObject var screenshotDetector: ScreenshotDetector
+    //@EnvironmentObject var screenshotDetector: ScreenshotDetector
+    @EnvironmentObject var screenshotDetectorGPT: ScreenshotDetectorGPT
     //@State private var isShowing = false
     
     var body: some View {
         HomeView() // instructions for taking screenshot + animated, live action background
-        if screenshotDetector.showWidget {
+        if screenshotDetectorGPT.showView {
             ColorChangeView() // timer is in this function!
-                .onTapGesture {
-                    // reset the timer
-                    // ScreenshotDetector().resetTimer()
-                }
         }
     }
-    
+    /*
     struct ContentView_Previews: PreviewProvider {
         static var previews: some View {
             ContentView()
-                .environmentObject(ScreenshotDetector())
+                .environmentObject(ScreenshotDetectorGPT())
         }
     }
-    
+    */
     struct DisappearingWidgetView: View {
         @State private var isShowing = true
         var body: some View {
@@ -49,6 +46,11 @@ struct ContentView: View {
                     .fill(Color.gray.opacity(0.3))
                     .frame(width: 100, height: 150)
                     .position(x: UIScreen.main.bounds.width - 50, y: 75)
+                    .onTapGesture {
+                        // reset the timer
+                        print("Called onTapGesture")
+                        // ScreenshotDetectorGPT().restartTimer()
+                    }
                     .gesture(
                         TapGesture()
                             .onEnded { _ in
@@ -66,6 +68,7 @@ struct ContentView: View {
                             .onTapGesture {
                                 // Change the color of the tapped circle
                                 withAnimation {
+                                    ScreenshotDetectorGPT().restartTimer()
                                     circleColors[index] = getRandomColor()
                                 }
                             }
@@ -93,13 +96,9 @@ struct ContentView: View {
             
             VStack(spacing: 10) {
                 // Placeholder 1
-                CircleView().onTapGesture {
-                    
-                }
+                CircleView().onTapGesture { }
                 // Placeholder 2
-                CircleView().onTapGesture {
-                    
-                }
+                CircleView().onTapGesture { }
                 // Placeholder 3
                 CircleView().onTapGesture {
                     isAlertViewVisible = true
