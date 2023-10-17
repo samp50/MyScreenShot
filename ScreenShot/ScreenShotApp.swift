@@ -10,12 +10,10 @@ import SwiftUI
 
 @main
 struct ScreenShotApp: App {
-    //@StateObject var screenshotDetector = ScreenshotDetector()
     @StateObject var screenshotDetectorGPT = ScreenshotDetectorGPT()
     var body: some Scene {
         WindowGroup {
             ContentView().environmentObject(screenshotDetectorGPT)
-            
         }
     }
 }

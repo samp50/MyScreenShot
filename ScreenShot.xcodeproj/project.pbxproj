@@ -13,7 +13,7 @@
 		100812262AC9F1C4007D16C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 100812252AC9F1C4007D16C8 /* Assets.xcassets */; };
 		100812292AC9F1C4007D16C8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 100812282AC9F1C4007D16C8 /* Preview Assets.xcassets */; };
 		108422A92ACDB61D000D1486 /* PhotoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108422A82ACDB61D000D1486 /* PhotoHelper.swift */; };
-		10E8716B2AD49C300065420F /* ScreenshotDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E8716A2AD49C300065420F /* ScreenshotDetector.swift */; };
+		10DC0EBB2ADB2C49007D4D20 /* GPT-1.swiftd in Sources */ = {isa = PBXBuildFile; fileRef = 10DC0EBA2ADB2C49007D4D20 /* GPT-1.swiftd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,7 +25,7 @@
 		100812282AC9F1C4007D16C8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		108422A82ACDB61D000D1486 /* PhotoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoHelper.swift; sourceTree = "<group>"; };
 		108422AA2ACDB8D4000D1486 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		10E8716A2AD49C300065420F /* ScreenshotDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotDetector.swift; sourceTree = "<group>"; };
+		10DC0EBA2ADB2C49007D4D20 /* GPT-1.swiftd */ = {isa = PBXFileReference; lastKnownFileType = text; path = "GPT-1.swiftd"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,10 +62,10 @@
 				10021C452AD85F1A00C8ACCB /* ScreenshotDetectorGPT.swift */,
 				100812212AC9F1C3007D16C8 /* ScreenShotApp.swift */,
 				100812232AC9F1C3007D16C8 /* ContentView.swift */,
-				10E8716A2AD49C300065420F /* ScreenshotDetector.swift */,
 				100812252AC9F1C4007D16C8 /* Assets.xcassets */,
 				100812272AC9F1C4007D16C8 /* Preview Content */,
 				108422A82ACDB61D000D1486 /* PhotoHelper.swift */,
+				10DC0EBA2ADB2C49007D4D20 /* GPT-1.swiftd */,
 			);
 			path = ScreenShot;
 			sourceTree = "<group>";
@@ -148,9 +148,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10E8716B2AD49C300065420F /* ScreenshotDetector.swift in Sources */,
 				100812242AC9F1C3007D16C8 /* ContentView.swift in Sources */,
 				108422A92ACDB61D000D1486 /* PhotoHelper.swift in Sources */,
+				10DC0EBB2ADB2C49007D4D20 /* GPT-1.swiftd in Sources */,
 				100812222AC9F1C3007D16C8 /* ScreenShotApp.swift in Sources */,
 				10021C462AD85F1A00C8ACCB /* ScreenshotDetectorGPT.swift in Sources */,
 			);

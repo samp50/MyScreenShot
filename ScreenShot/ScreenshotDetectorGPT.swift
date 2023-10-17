@@ -12,8 +12,8 @@ class ScreenshotDetectorGPT: ObservableObject {
     static let shared = ScreenshotDetectorGPT()
     
     @Published var showView: Bool = false
-
-    var timer: Timer?
+    @Published var isScreenshotTaken = false
+    @Published var timer: Timer?
 
     init() {
         NotificationCenter.default.addObserver(
@@ -27,8 +27,9 @@ class ScreenshotDetectorGPT: ObservableObject {
     }
 
     func restartTimer() {
+        print("Called restartTimer")
         timer?.invalidate()
-        self.showView = true
+        showView = true
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { _ in
             self.showView = false
         }
