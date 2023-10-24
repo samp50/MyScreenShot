@@ -1,5 +1,5 @@
 //
-//  ScreenshotDetectorGPT.swift
+//  ScreenshotDetector.swift
 //  ScreenShot
 //
 //  Created by Samuel Phillips on 10/12/23.
@@ -8,8 +8,9 @@
 import SwiftUI
 import Foundation
 
-class ScreenshotDetectorGPT: ObservableObject {
-    static let shared = ScreenshotDetectorGPT()
+class ScreenshotDetector: ObservableObject {
+    
+    static let shared = ScreenshotDetector()
     
     @Published var showView: Bool = false
     @Published var isScreenshotTaken = false

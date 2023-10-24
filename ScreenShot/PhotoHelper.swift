@@ -15,6 +15,28 @@ import UIKit
 //        in memory for easy retrieval
 
 class PhotoHelper {
+    
+    func addImageToAlbum(image: PHAsset, albumName: String) {
+        PHPhotoLibrary.shared().performChanges {
+            let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
+            createAlbumRequest.addAssets([image] as NSFastEnumeration)
+        } completionHandler: { success, error in
+            if success {
+                print("Image added to album successfully.")
+            } else if let error = error {
+                print("Error adding image to album: \(error)")
+            }
+        }
+    }
+
+    
+    func fetchMostRecentImage() -> PHAsset? {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
+        return fetchResult.firstObject
+    }
+
     static func createNewPhotoAlbum(albumName: String) {
         PHPhotoLibrary.requestAuthorization { status in
             if status == .authorized {
@@ -32,12 +54,12 @@ class PhotoHelper {
                         print("Error creating album: \(error?.localizedDescription ?? "Unknown Error")")
                     }
                 })
-
+                
             } else {
                 // Handle the case where the user denied access
             }
         }
-
+        
     }
     
     public func imageFromAsset(asset: PHAsset) -> UIImage? {
@@ -45,20 +67,20 @@ class PhotoHelper {
         let requestOptions = PHImageRequestOptions()
         requestOptions.isSynchronous = false
         requestOptions.deliveryMode = .highQualityFormat
-
+        
         var resultImage: UIImage?
-
+        
         // Use a semaphore to make the request synchronous
         let semaphore = DispatchSemaphore(value: 0)
-
+        
         imageManager.requestImage(for: asset, targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight), contentMode: .aspectFit, options: requestOptions) { (image, info) in
             resultImage = image
             semaphore.signal()
         }
-
+        
         // Wait for the request to complete
         semaphore.wait()
-
+        
         return resultImage
     }
     
@@ -67,7 +89,7 @@ class PhotoHelper {
         let requestOptions = PHImageRequestOptions()
         requestOptions.isSynchronous = false
         requestOptions.deliveryMode = .highQualityFormat
-
+        
         imageManager.requestImage(for: asset, targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight), contentMode: .aspectFit, options: requestOptions) { (image, info) in
             completion(image)
         }
@@ -114,19 +136,19 @@ class PhotoHelper {
     }
     
     func handleTap(for index: Int) {
-            switch index {
-            case 0:
-                // Handle tap for the first item
-                print("Tapped Item 1")
-            case 1:
-                // Handle tap for the second item
-                print("Tapped Item 2")
-            case 2:
-                // Handle tap for the third item
-                print("Tapped Item 3")
-            default:
-                break
-            }
+        switch index {
+        case 0:
+            // Handle tap for the first item
+            print("Tapped Item 1")
+        case 1:
+            // Handle tap for the second item
+            print("Tapped Item 2")
+        case 2:
+            // Handle tap for the third item
+            print("Tapped Item 3")
+        default:
+            break
         }
+    }
     
 }
