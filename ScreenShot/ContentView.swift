@@ -58,39 +58,6 @@ struct ContentView: View {
                 }
                 .position(x: UIScreen.main.bounds.size.width - 50, y: 75)
             }
-            /*
-             ZStack {
-             Rectangle()
-             .fill(Color.gray.opacity(0.3))
-             .frame(width: 100, height: 150)
-             .position(x: UIScreen.main.bounds.width - 50, y: 75)
-             .onTapGesture {
-             print("Tapped gray box")
-             screenshotDetector.restartTimer()
-             }
-             .gesture(
-             TapGesture()
-             .onEnded { _ in
-             // Rotate the colors of the circles
-             let lastColor = circleColors.popLast()
-             circleColors.insert(lastColor ?? .red, at: 0)
-             }
-             )
-             
-             VStack(spacing: 20) {
-             ForEach(0..<3, id: \.self) { index in
-             Circle()
-             .fill(circleColors[index])
-             .frame(width: 50, height: 50)
-             .position(x: UIScreen.main.bounds.width - 50, y: 75)
-             .onTapGesture {
-             withAnimation {
-             circleColors[index] = getRandomColor()
-             }
-             }
-             }
-             }
-             }*/
         }
     }
     

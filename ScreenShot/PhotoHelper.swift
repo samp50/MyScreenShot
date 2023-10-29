@@ -15,20 +15,68 @@ import UIKit
 //        in memory for easy retrieval
 
 class PhotoHelper {
-    
     func addImageToAlbum(image: PHAsset, albumName: String) {
-        PHPhotoLibrary.shared().performChanges {
-            let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
-            createAlbumRequest.addAssets([image] as NSFastEnumeration)
-        } completionHandler: { success, error in
-            if success {
-                print("Image added to album successfully.")
-            } else if let error = error {
-                print("Error adding image to album: \(error)")
+        if doesAlbumExist(albumTitle: albumName) {
+            print("Adding to preexisting album: \(albumName)")
+            addAssetToAlbum(asset: image, albumName: albumName)
+            
+        } else {
+            PHPhotoLibrary.shared().performChanges {
+                let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
+                createAlbumRequest.addAssets([image] as NSFastEnumeration)
+            } completionHandler: { success, error in
+                if success {
+                    print("Image added to album successfully.")
+                } else if let error = error {
+                    print("Error adding image to album: \(error)")
+                }
             }
         }
     }
+    
+    func addExistingAssetToAlbum(albumName: String, asset: PHAsset) {
+        // Fetch the album with the specified name
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
+        let album = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions).firstObject
 
+        if let album = album {
+            // Create a change request to add the asset to the album
+            PHPhotoLibrary.shared().performChanges {
+                let assetChangeRequest = PHAssetChangeRequest(for: asset)
+                guard let albumChangeRequest = PHAssetCollectionChangeRequest(for: album) else {
+                    return
+                }
+                albumChangeRequest.addAssets([assetChangeRequest.placeholderForCreatedAsset] as NSArray)
+            } completionHandler: { (success, error) in
+                if success {
+                    print("Asset added to the album.")
+                } else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                }
+            }
+        } else {
+            print("Album not found.")
+        }
+    }
+    
+    func doesAlbumExist(albumTitle: String) -> Bool {
+        // Create a predicate to search for the album by title
+        let albumFetchOptions = PHFetchOptions()
+        albumFetchOptions.predicate = NSPredicate(format: "title = %@", albumTitle)
+        
+        // Fetch user's albums
+        let userAlbums = PHAssetCollection.fetchAssetCollections(
+            with: .album,
+            subtype: .any,
+            options: albumFetchOptions
+        )
+        
+        // If there's at least one album with the given title, return true
+        return userAlbums.count > 0
+    }
+    
+    
     
     func fetchMostRecentImage() -> PHAsset? {
         let fetchOptions = PHFetchOptions()
@@ -36,7 +84,7 @@ class PhotoHelper {
         let fetchResult = PHAsset.fetchAssets(with: .image, options: fetchOptions)
         return fetchResult.firstObject
     }
-
+    
     static func createNewPhotoAlbum(albumName: String) {
         PHPhotoLibrary.requestAuthorization { status in
             if status == .authorized {
@@ -95,26 +143,6 @@ class PhotoHelper {
         }
     }
     
-    static func addPhotoToAlbum(fetchResult: PHFetchResult<PHAsset>, albumName: String) {
-        struct Album {
-            var name: String
-            var images: [UIImage]
-        }
-        var myAlbum = Album(name: albumName, images: [])
-        //myAlbum.images.append(mostRecentPhoto!)
-        //return true
-        
-        let albumFetchResult = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [albumName], options: nil)
-        
-        if let album = albumFetchResult.firstObject {
-            PHPhotoLibrary.shared().performChanges {
-                let assetChangeRequest = PHAssetCollectionChangeRequest(for: album)
-                assetChangeRequest?.addAssets(fetchResult)
-            }
-        }
-    }
-    
-    
     // Return path to most recent photo
     static func fetchMostRecentPhoto() -> PHFetchResult<PHAsset>? {
         let fetchOptions = PHFetchOptions()
@@ -133,6 +161,29 @@ class PhotoHelper {
             return nil
         }
         
+    }
+    
+    func addAssetToAlbum(asset: PHAsset, albumName: String) {
+        // Fetch the photo album by its name
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
+        let album = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
+        
+        if let firstAlbum = album.firstObject {
+            // Album found, now add the asset to it
+            PHPhotoLibrary.shared().performChanges {
+                let assetChangeRequest = PHAssetCollectionChangeRequest(for: firstAlbum)
+                assetChangeRequest?.addAssets([asset] as NSFastEnumeration)
+            } completionHandler: { success, error in
+                if success {
+                    print("Asset added to the album successfully.")
+                } else {
+                    print("Error adding asset to the album: \(error?.localizedDescription ?? "Unknown error").")
+                }
+            }
+        } else {
+            print("Album not found.")
+        }
     }
     
     func handleTap(for index: Int) {
