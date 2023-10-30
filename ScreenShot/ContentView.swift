@@ -4,9 +4,13 @@ import Foundation
 struct ContentView: View {
     @EnvironmentObject var screenshotDetector: ScreenshotDetector
     @State private var circleColors: [Color] = [.red, .green, .blue]
+    @State private var isAlertViewVisible = false
     
     var body: some View {
         HomeView()
+        if isAlertViewVisible {
+            AlertView()
+        }
         if screenshotDetector.showView {
             ZStack {
                 // Background
@@ -29,6 +33,7 @@ struct ContentView: View {
                             .frame(width: 30, height: 30)
                             .foregroundColor(.red)
                             .onTapGesture {
+                                screenshotDetector.restartTimer()
                                 print("Added photo to Red album") // delete
                                 if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
                                     let albumName = "Red Album" // Replace with your desired album name
@@ -40,6 +45,7 @@ struct ContentView: View {
                             .frame(width: 30, height: 30)
                             .foregroundColor(.green)
                             .onTapGesture {
+                                screenshotDetector.restartTimer()
                                 print("Added photo to Green album") // delete
                                 if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
                                     let albumName = "Green Album" // Replace with your desired album name
@@ -51,8 +57,9 @@ struct ContentView: View {
                             .frame(width: 30, height: 30)
                             .foregroundColor(.yellow)
                             .onTapGesture {
-                                // Call createNewPhotoAlbum()
+                                screenshotDetector.restartTimer()
                                 print("Tapped lowest circle")
+                                isAlertViewVisible.toggle()
                             }
                     }
                 }
@@ -83,13 +90,16 @@ struct AlertView: View {
     @State private var showingAlert = false
     @State private var enteredText = ""
     var body: some View {
-        Button("Show Alert") {
-            showingAlert = true
-        }
+        Text("")
+            .onAppear {
+                showingAlert = true
+            }
         .alert("Enter new photo album name", isPresented: $showingAlert) {
             TextField("Enter text", text: $enteredText)
             Button() {
-                PhotoHelper.createNewPhotoAlbum(albumName: enteredText)
+                if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
+                    PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: enteredText, isUserCreated: true) // this still makes dupicate albums!?! probably okay to leave for now as will never really be a problem
+                }
             } label: {
                 Text("Submit")
             }
@@ -98,7 +108,6 @@ struct AlertView: View {
                 print("User cancelled photo album selection.")
             }
         }
-        .padding()
     }
 }
 

@@ -19,44 +19,22 @@ class PhotoHelper {
         if doesAlbumExist(albumTitle: albumName) {
             print("Adding to preexisting album: \(albumName)")
             addAssetToAlbum(asset: image, albumName: albumName)
-            
         } else {
-            PHPhotoLibrary.shared().performChanges {
-                let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
-                createAlbumRequest.addAssets([image] as NSFastEnumeration)
-            } completionHandler: { success, error in
-                if success {
-                    print("Image added to album successfully.")
-                } else if let error = error {
-                    print("Error adding image to album: \(error)")
-                }
-            }
+            addAssetToNewAlbum(asset: image, albumName: albumName, isUserCreated: false)
         }
     }
     
-    func addExistingAssetToAlbum(albumName: String, asset: PHAsset) {
-        // Fetch the album with the specified name
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
-        let album = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions).firstObject
-
-        if let album = album {
-            // Create a change request to add the asset to the album
-            PHPhotoLibrary.shared().performChanges {
-                let assetChangeRequest = PHAssetChangeRequest(for: asset)
-                guard let albumChangeRequest = PHAssetCollectionChangeRequest(for: album) else {
-                    return
-                }
-                albumChangeRequest.addAssets([assetChangeRequest.placeholderForCreatedAsset] as NSArray)
-            } completionHandler: { (success, error) in
-                if success {
-                    print("Asset added to the album.")
-                } else {
-                    print("Error: \(error?.localizedDescription ?? "Unknown error")")
-                }
+    // Adds assets to new album without making a duplicate
+    func addAssetToNewAlbum(asset: PHAsset, albumName: String, isUserCreated: Bool?) {
+        PHPhotoLibrary.shared().performChanges {
+            let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
+            createAlbumRequest.addAssets([asset] as NSFastEnumeration)
+        } completionHandler: { success, error in
+            if success {
+                print("Image added to album successfully.")
+            } else if let error = error {
+                print("Error adding image to album: \(error)")
             }
-        } else {
-            print("Album not found.")
         }
     }
     
@@ -110,28 +88,6 @@ class PhotoHelper {
         
     }
     
-    public func imageFromAsset(asset: PHAsset) -> UIImage? {
-        let imageManager = PHImageManager.default()
-        let requestOptions = PHImageRequestOptions()
-        requestOptions.isSynchronous = false
-        requestOptions.deliveryMode = .highQualityFormat
-        
-        var resultImage: UIImage?
-        
-        // Use a semaphore to make the request synchronous
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        imageManager.requestImage(for: asset, targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight), contentMode: .aspectFit, options: requestOptions) { (image, info) in
-            resultImage = image
-            semaphore.signal()
-        }
-        
-        // Wait for the request to complete
-        semaphore.wait()
-        
-        return resultImage
-    }
-    
     static func getUIImage(asset: PHAsset, completion: @escaping (UIImage?) -> Void) {
         let imageManager = PHImageManager.default()
         let requestOptions = PHImageRequestOptions()
@@ -164,6 +120,7 @@ class PhotoHelper {
     }
     
     func addAssetToAlbum(asset: PHAsset, albumName: String) {
+        // Adds assets to already existing album
         // Fetch the photo album by its name
         let fetchOptions = PHFetchOptions()
         fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
