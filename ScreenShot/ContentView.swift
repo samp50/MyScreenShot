@@ -7,63 +7,63 @@ struct ContentView: View {
     @State private var isAlertViewVisible = false
     
     var body: some View {
-        HomeView()
-        if isAlertViewVisible {
-            AlertView()
-        }
-        if screenshotDetector.showView {
-            ZStack {
-                // Background
-                Color.white.edgesIgnoringSafeArea(.all)
-                
-                // Rectangle in the upper right-hand corner
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(width: 100, height: 150)
-                    .foregroundColor(.blue)
-                    .position(x: UIScreen.main.bounds.size.width - 50, y: 75)
-                    .onTapGesture {
-                        print("Tapped main box")
-                        screenshotDetector.restartTimer()
-                    }
-                // Three small circles inside the rectangle
-                HStack {
-                    VStack {
-                        // Make this stack have same tap property as parent rect for timer
-                        Circle()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(.red)
-                            .onTapGesture {
-                                screenshotDetector.restartTimer()
-                                print("Added photo to Red album") // delete
-                                if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                                    let albumName = "Red Album" // Replace with your desired album name
-                                    PhotoHelper().addImageToAlbum(image: mostRecentImage, albumName: albumName)
+        ZStack {
+            HomeView()
+            if isAlertViewVisible {
+                AlertView()
+            }
+            // Add animation and proper overlay settings here
+            if screenshotDetector.showView {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 30)
+                        .frame(width: 100, height: 161.8)
+                        .foregroundColor(.gray)
+                        .opacity(0.5)
+                        .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
+                        .onTapGesture {
+                            print("Tapped main box")
+                            screenshotDetector.restartTimer()
+                        }
+                    // Three small circles inside the rectangle
+                    HStack {
+                        VStack {
+                            // Make this stack have same tap property as parent rect for timer
+                            Circle()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.red)
+                                .onTapGesture {
+                                    screenshotDetector.restartTimer()
+                                    print("Added photo to Red album") // delete
+                                    if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
+                                        let albumName = "Red Album" // Replace with your desired album name
+                                        PhotoHelper().addImageToAlbum(image: mostRecentImage, albumName: albumName)
+                                    }
                                 }
-                            }
-                        
-                        Circle()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(.green)
-                            .onTapGesture {
-                                screenshotDetector.restartTimer()
-                                print("Added photo to Green album") // delete
-                                if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                                    let albumName = "Green Album" // Replace with your desired album name
-                                    PhotoHelper().addImageToAlbum(image: mostRecentImage, albumName: albumName)
+                            
+                            Circle()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.green)
+                                .onTapGesture {
+                                    screenshotDetector.restartTimer()
+                                    print("Added photo to Green album") // delete
+                                    if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
+                                        let albumName = "Green Album" // Replace with your desired album name
+                                        PhotoHelper().addImageToAlbum(image: mostRecentImage, albumName: albumName)
+                                    }
                                 }
-                            }
-                        
-                        Circle()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(.yellow)
-                            .onTapGesture {
-                                screenshotDetector.restartTimer()
-                                print("Tapped lowest circle")
-                                isAlertViewVisible.toggle()
-                            }
+                            
+                            Circle()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.yellow)
+                                .onTapGesture {
+                                    screenshotDetector.restartTimer()
+                                    print("Tapped lowest circle")
+                                    isAlertViewVisible.toggle()
+                                }
+                        }
                     }
+                    .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
                 }
-                .position(x: UIScreen.main.bounds.size.width - 50, y: 75)
             }
         }
     }
@@ -94,20 +94,27 @@ struct AlertView: View {
             .onAppear {
                 showingAlert = true
             }
-        .alert("Enter new photo album name", isPresented: $showingAlert) {
-            TextField("Enter text", text: $enteredText)
-            Button() {
-                if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                    PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: enteredText, isUserCreated: true) // this still makes dupicate albums!?! probably okay to leave for now as will never really be a problem
+            .alert("Enter new photo album name", isPresented: $showingAlert) {
+                TextField("Enter text", text: $enteredText)
+                Button() {
+                    if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
+                        PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: enteredText, isUserCreated: true) // this still makes dupicate albums!?! probably okay to leave for now as will never really be a problem
+                    }
+                } label: {
+                    Text("Submit")
                 }
-            } label: {
-                Text("Submit")
+                Button("Cancel", role: .cancel) {
+                    // Handle the retry action.
+                    print("User cancelled photo album selection.")
+                }
             }
-            Button("Cancel", role: .cancel) {
-                // Handle the retry action.
-                print("User cancelled photo album selection.")
-            }
-        }
+    }
+}
+
+struct ExampleTextView: View {
+    var body: some View {
+        Text("EXAMPLE TEXT")
+            .transition(.opacity)
     }
 }
 
