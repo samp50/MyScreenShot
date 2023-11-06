@@ -5,6 +5,8 @@ struct ContentView: View {
     @EnvironmentObject var screenshotDetector: ScreenshotDetector
     @State private var circleColors: [Color] = [.red, .green, .blue]
     @State private var isAlertViewVisible = false
+    @State private var rectIsEnlarged = false
+    @State private var circleIsEnlarged = false
     
     var body: some View {
         ZStack {
@@ -15,15 +17,29 @@ struct ContentView: View {
             // Add animation and proper overlay settings here
             if screenshotDetector.showView {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 30)
+                    RoundedRectangleView(isEnlarged: $rectIsEnlarged)
                         .frame(width: 100, height: 161.8)
                         .foregroundColor(.gray)
                         .opacity(0.5)
                         .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
-                        .onTapGesture {
+                        /*.onTapGesture {
+                            withAnimation {
+                                isEnlarged.toggle()
+                            }
                             print("Tapped main box")
                             screenshotDetector.restartTimer()
-                        }
+                        }*/
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { _ in
+                                    rectIsEnlarged.toggle()
+                                    screenshotDetector.restartTimer()
+                                }
+                                .onEnded { _ in
+                                    rectIsEnlarged.toggle()
+                                    screenshotDetector.restartTimer()
+                                }
+                        )
                     // Three small circles inside the rectangle
                     HStack {
                         VStack {
@@ -52,14 +68,19 @@ struct ContentView: View {
                                     }
                                 }
                             
-                            Circle()
-                                .frame(width: 30, height: 30)
-                                .foregroundColor(.yellow)
-                                .onTapGesture {
-                                    screenshotDetector.restartTimer()
-                                    print("Tapped lowest circle")
-                                    isAlertViewVisible.toggle()
-                                }
+                            CircleView(isEnlarged: $circleIsEnlarged)
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { _ in
+                                            circleIsEnlarged.toggle()
+                                            screenshotDetector.restartTimer()
+                                        }
+                                        .onEnded { _ in
+                                            circleIsEnlarged.toggle()
+                                            screenshotDetector.restartTimer()
+                                        }
+                                )
+                            
                         }
                     }
                     .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
@@ -75,14 +96,23 @@ struct ContentView: View {
 }
 
 struct CircleView: View {
+    @Binding var isEnlarged: Bool
     var body: some View {
         Circle()
-            .frame(width: 40, height: 40)
-            .foregroundColor(.white)
+            .frame(width: isEnlarged ? 33 : 30, height: isEnlarged ? 33 : 30)
+            .foregroundColor(.yellow)
             .overlay(
                 Circle()
                     .stroke(Color.blue, lineWidth: 2)
             )
+    }
+}
+
+struct RoundedRectangleView: View {
+    @Binding var isEnlarged: Bool
+    var body: some View {
+        RoundedRectangle(cornerRadius: isEnlarged ? 29.1 : 30)
+            .frame(width: isEnlarged ? 100 : 97, height: isEnlarged ? 171.8 : 166.8)
     }
 }
 
