@@ -17,6 +17,11 @@ class ScreenshotDetector: ObservableObject {
     @Published var timer: Timer?
 
     init() {
+        // Set our two default album names
+        let defaults = UserDefaults.standard
+        defaults.set("Red Album (Screenshot)", forKey: "0");
+        defaults.set("Green Album (Screenshot)", forKey: "1");
+        
         NotificationCenter.default.addObserver(
             forName: UIApplication.userDidTakeScreenshotNotification,
             object: nil,

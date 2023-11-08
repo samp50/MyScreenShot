@@ -8,8 +8,10 @@ struct ContentView: View {
     @State private var isAlertViewVisible = false
     @State private var rectIsEnlarged = false
     @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false, false] // 2 default Album name values + 5 extras -- make sure to write in alert for >7 album creation attempts
+    //@State private var albumNames = ["Red Album (Screenshot)", "Green Album (Screenshot)", "", "", "", "", nil]
     let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
     //@State private var dummyDict: [String: Bool] = ["Red Album": false, "Green Album": false, "Blue Album": false]
+    let defaults = UserDefaults.standard
     
     var body: some View {
         ZStack {
@@ -55,13 +57,15 @@ struct ContentView: View {
                                 // Rewrite button actions as function for readability
                                     .foregroundColor(.red)
                                     .onTapGesture {
-                                        buttonIsTapped(circleNum: 0, albumName: "Red Album (Screenshot)")
+                                        let savedAlbumName = defaults.object(forKey: "0")
+                                        buttonIsTapped(circleNum: 0, albumName: savedAlbumName as! String)
                                     }
                                 
                                 CircleView(isEnlarged: $circleIsEnlarged[1])
                                     .foregroundColor(.green)
                                     .onTapGesture {
-                                        buttonIsTapped(circleNum: 1, albumName: "Green Album (Screenshot)")
+                                        let savedAlbumName = defaults.object(forKey: "1")
+                                        buttonIsTapped(circleNum: 1, albumName: savedAlbumName as! String)
                                     }
                                 
                                 CircleView(isEnlarged: $circleIsEnlarged[6])
@@ -185,4 +189,3 @@ struct HomeView: View {
         Text("Take a screenshot!")
     }
 }
-
