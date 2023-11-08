@@ -3,14 +3,20 @@ import Foundation
 
 struct ContentView: View {
     @EnvironmentObject var screenshotDetector: ScreenshotDetector
-    @State private var circleColors: [Color] = [.red, .green, .blue]
+    
+    @State private var isUserMessageVisible = false
     @State private var isAlertViewVisible = false
     @State private var rectIsEnlarged = false
-    @State private var circleIsEnlarged = false
+    @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false, false] // 2 default Album name values + 5 extras -- make sure to write in alert for >7 album creation attempts
+    let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
+    //@State private var dummyDict: [String: Bool] = ["Red Album": false, "Green Album": false, "Blue Album": false]
     
     var body: some View {
         ZStack {
             HomeView()
+            if isUserMessageVisible {
+                UserMessageView()
+            }
             if isAlertViewVisible {
                 AlertView()
             }
@@ -18,17 +24,16 @@ struct ContentView: View {
             if screenshotDetector.showView {
                 ZStack {
                     RoundedRectangleView(isEnlarged: $rectIsEnlarged)
-                        .frame(width: 100, height: 161.8)
+                    //.frame(width: 100, height: 161.8)
                         .foregroundColor(.gray)
                         .opacity(0.5)
                         .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
-                        /*.onTapGesture {
-                            withAnimation {
-                                isEnlarged.toggle()
-                            }
-                            print("Tapped main box")
-                            screenshotDetector.restartTimer()
-                        }*/
+                    /*.onTapGesture {
+                     rectIsEnlarged.toggle()
+                     delay(seconds: 0.25) {
+                     rectIsEnlarged.toggle()
+                     }
+                     }*/
                         .gesture(
                             DragGesture(minimumDistance: 0)
                                 .onChanged { _ in
@@ -40,70 +45,79 @@ struct ContentView: View {
                                     screenshotDetector.restartTimer()
                                 }
                         )
-                    // Three small circles inside the rectangle
-                    HStack {
-                        VStack {
-                            // Make this stack have same tap property as parent rect for timer
-                            Circle()
-                                .frame(width: 30, height: 30)
-                                .foregroundColor(.red)
-                                .onTapGesture {
-                                    screenshotDetector.restartTimer()
-                                    print("Added photo to Red album") // delete
-                                    if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                                        let albumName = "Red Album" // Replace with your desired album name
-                                        PhotoHelper().addImageToAlbum(image: mostRecentImage, albumName: albumName)
+                    // 🔴 🔵 🟢
+                    ScrollView {
+                        // Three small circles inside the rectangle
+                        HStack {
+                            VStack {
+                                // Make this stack have same tap property as parent rect for timer
+                                CircleView(isEnlarged: $circleIsEnlarged[0])
+                                // Rewrite button actions as function for readability
+                                    .foregroundColor(.red)
+                                    .onTapGesture {
+                                        buttonIsTapped(circleNum: 0, albumName: "Red Album (Screenshot)")
                                     }
-                                }
-                            
-                            Circle()
-                                .frame(width: 30, height: 30)
-                                .foregroundColor(.green)
-                                .onTapGesture {
-                                    screenshotDetector.restartTimer()
-                                    print("Added photo to Green album") // delete
-                                    if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                                        let albumName = "Green Album" // Replace with your desired album name
-                                        PhotoHelper().addImageToAlbum(image: mostRecentImage, albumName: albumName)
+                                
+                                CircleView(isEnlarged: $circleIsEnlarged[1])
+                                    .foregroundColor(.green)
+                                    .onTapGesture {
+                                        buttonIsTapped(circleNum: 1, albumName: "Green Album (Screenshot)")
                                     }
-                                }
-                            
-                            CircleView(isEnlarged: $circleIsEnlarged)
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { _ in
-                                            circleIsEnlarged.toggle()
-                                            screenshotDetector.restartTimer()
+                                
+                                CircleView(isEnlarged: $circleIsEnlarged[6])
+                                    .foregroundColor(.blue)
+                                    .onTapGesture {
+                                        isAlertViewVisible.toggle()
+                                        circleIsEnlarged[6].toggle()
+                                        delay(seconds: 0.25) {
+                                            circleIsEnlarged[6].toggle()
                                         }
-                                        .onEnded { _ in
-                                            circleIsEnlarged.toggle()
-                                            screenshotDetector.restartTimer()
-                                        }
-                                )
-                            
+                                    }
+                            }
+                            //.frame(width: 33.0, height: 105.8) // Possible dimension contraints for ScrollView to allow tapping on RoundedRectangle
                         }
+                        .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
                     }
-                    .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
                 }
             }
         }
     }
     
-    private func getRandomColor() -> Color {
-        let colors: [Color] = [.red, .green, .blue, .orange, .purple, .pink]
-        return colors.randomElement() ?? .gray
+    
+    private func delay(seconds: Double, closure: @escaping () -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            closure()
+        }
+    }
+    
+    private func buttonIsTapped(circleNum: Int, albumName: String) {
+        impactFeedbackgenerator.prepare()
+        impactFeedbackgenerator.impactOccurred()
+        circleIsEnlarged[circleNum].toggle()
+        if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
+            PhotoHelper().addImageToAlbum(image: mostRecentImage, albumName: albumName)
+        }
+        delay(seconds: 0.25) {
+            circleIsEnlarged[circleNum].toggle()
+            impactFeedbackgenerator.impactOccurred()
+        }
+        isUserMessageVisible.toggle()
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+            isUserMessageVisible.toggle()
+        }
     }
 }
+
 
 struct CircleView: View {
     @Binding var isEnlarged: Bool
     var body: some View {
         Circle()
             .frame(width: isEnlarged ? 33 : 30, height: isEnlarged ? 33 : 30)
-            .foregroundColor(.yellow)
+        //.foregroundColor(.yellow)
             .overlay(
                 Circle()
-                    .stroke(Color.blue, lineWidth: 2)
+                    .stroke(Color.white, lineWidth: 1)
             )
     }
 }
@@ -145,6 +159,24 @@ struct ExampleTextView: View {
     var body: some View {
         Text("EXAMPLE TEXT")
             .transition(.opacity)
+    }
+}
+
+struct UserMessageView: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 30.0)
+                .frame(width: 225, height: 75)
+                .position(x: UIScreen.main.bounds.size.width / 2, y: (UIScreen.main.bounds.size.height / 5) * 4)
+                .foregroundColor(.gray)
+                .opacity(0.5)
+                .cornerRadius(10)
+            Text("Added image to album")
+                .foregroundColor(.white)
+                .font(.body)
+                .position(x: UIScreen.main.bounds.size.width / 2, y: (UIScreen.main.bounds.size.height / 5) * 4)
+                .multilineTextAlignment(.center)
+        }
     }
 }
 
