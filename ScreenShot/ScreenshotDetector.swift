@@ -19,8 +19,9 @@ class ScreenshotDetector: ObservableObject {
     init() {
         // Set our two default album names
         let defaults = UserDefaults.standard
-        defaults.set("Red Album (Screenshot)", forKey: "0");
-        defaults.set("Green Album (Screenshot)", forKey: "1");
+        defaults.set("Red Album (Screenshot)", forKey: "SS-0");
+        defaults.set("Green Album (Screenshot)", forKey: "SS-1");
+        //defaults.set("Delete Me (Screenshot)", forKey: "2");
         
         NotificationCenter.default.addObserver(
             forName: UIApplication.userDidTakeScreenshotNotification,
