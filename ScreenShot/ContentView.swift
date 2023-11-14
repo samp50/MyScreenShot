@@ -7,16 +7,13 @@ struct ContentView: View {
     @State private var isUserMessageVisible = false
     @State private var isAlertViewVisible = false
     @State private var rectIsEnlarged = false
-    @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false] // 2 default Album name values + 5 extras -- make sure to write in alert for >7 album
-    //@State private var circleColors: [UIColor] = [UIColor(hex: 0x020887), UIColor(hex: 0x334195), UIColor(hex: 0x647AA3), UIColor(hex: 0x95B2B0), UIColor(hex: 0xC6EBBE), UIColor(hex: 0x3498db)]
+    @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false, false] // 2 default Album name values + 5 extras -- make sure to write in alert for >7 album creation attempts
     //@State private var albumNames = ["Red Album (Screenshot)", "Green Album (Screenshot)", "", "", "", "", nil]
     let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
     //@State private var dummyDict: [String: Bool] = ["Red Album": false, "Green Album": false, "Blue Album": false]
-    let defaults = UserDefaults.standard // del
-    @State private var yOffset: CGFloat = 0.0
-    let lowerLimit: CGFloat = -100.0
-    let upperLimit: CGFloat = 100.0
-    
+    @State private var contentHeight: CGFloat = 0
+    @State private var scrollViewHeight: CGFloat = 200 // Set your desired height
+    let defaults = UserDefaults.standard
     
     var body: some View {
         ZStack {
@@ -29,18 +26,13 @@ struct ContentView: View {
             }
             // Add animation and proper overlay settings here
             if screenshotDetector.showView {
-                ZStack {
-                    RoundedRectangleView(isEnlarged: $rectIsEnlarged)
-                    //.frame(width: 100, height: 161.8)
+                GeometryReader { geo in
+                    ZStack {
+                        RoundedRectangleView(isEnlarged: $rectIsEnlarged)
+                        .frame(width: 100, height: 161.8) // RoundedRect dimensions
                         .foregroundColor(.gray)
                         .opacity(0.5)
                         .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
-                    /*.onTapGesture {
-                     rectIsEnlarged.toggle()
-                     delay(seconds: 0.25) {
-                     rectIsEnlarged.toggle()
-                     }
-                     }*/
                         .gesture(
                             DragGesture(minimumDistance: 0)
                                 .onChanged { _ in
@@ -52,92 +44,56 @@ struct ContentView: View {
                                     screenshotDetector.restartTimer()
                                 }
                         )
-                    // 🔴 🔵 🟢
-                    ScrollViewReader { scrollViewProxy in
-                        ScrollView {
+                        // 🔴 🔵 🟢
+                        ScrollView(showsIndicators: false) {
                             // Three small circles inside the rectangle
                             HStack {
                                 VStack {
-                                    GeometryReader { geo in
-                                        Color.clear.preference(
-                                            key: ViewOffsetKey.self,
-                                            value: geo.frame(in: .named("scroll")).origin.y
-                                        )
-                                    }
-                                    .onPreferenceChange(ViewOffsetKey.self) { value in
-                                        yOffset = value
-                                    }
                                     // Make this stack have same tap property as parent rect for timer
-                                    let ssUserDefaultsData = filterUserDefaultsData(withPrefix:" SS-")
-                                    ForEach(0..<3) { index in
-                                        /*Text("Item \(index)")
-                                         .frame(width: 200, height: 50)
-                                         .background(Color.blue)
-                                         .cornerRadius(10)
-                                         */
-                                        CircleView(isEnlarged: $circleIsEnlarged[0])
-                                        // Rewrite button actions as function for readability
-                                        //.foregroundColor(.red)
-                                            .onTapGesture {
-                                                let savedAlbumName = defaults.object(forKey: "0")
-                                                buttonIsTapped(circleNum: 0, albumName: savedAlbumName as! String)
+                                    CircleView(isEnlarged: $circleIsEnlarged[0])
+                                    // Rewrite button actions as function for readability
+                                        .foregroundColor(.red)
+                                        .onTapGesture {
+                                            let savedAlbumName = defaults.object(forKey: "0")
+                                            buttonIsTapped(circleNum: 0, albumName: savedAlbumName as! String)
+                                        }
+                                    
+                                    CircleView(isEnlarged: $circleIsEnlarged[1])
+                                        .foregroundColor(.green)
+                                        .onTapGesture {
+                                            let savedAlbumName = defaults.object(forKey: "1")
+                                            buttonIsTapped(circleNum: 1, albumName: savedAlbumName as! String)
+                                        }
+                                    
+                                    CircleView(isEnlarged: $circleIsEnlarged[6])
+                                        .foregroundColor(.blue)
+                                        .onTapGesture {
+                                            isAlertViewVisible.toggle()
+                                            circleIsEnlarged[6].toggle()
+                                            delay(seconds: 0.25) {
+                                                circleIsEnlarged[6].toggle()
+                                            }
+                                        }
+                                }
+                                .background(
+                                    GeometryReader { contentGeo in
+                                        Color.clear
+                                            .onAppear {
+                                                self.contentHeight = contentGeo.size.height
                                             }
                                     }
-                                    /*
-                                     CircleView(isEnlarged: $circleIsEnlarged[0])
-                                     // Rewrite button actions as function for readability
-                                     .foregroundColor(.red)
-                                     .onTapGesture {
-                                     let savedAlbumName = defaults.object(forKey: "0")
-                                     buttonIsTapped(circleNum: 0, albumName: savedAlbumName as! String)
-                                     }
-                                     
-                                     CircleView(isEnlarged: $circleIsEnlarged[1])
-                                     .foregroundColor(.green)
-                                     .onTapGesture {
-                                     let savedAlbumName = defaults.object(forKey: "1")
-                                     buttonIsTapped(circleNum: 1, albumName: savedAlbumName as! String)
-                                     }
-                                     
-                                     CircleView(isEnlarged: $circleIsEnlarged[6])
-                                     .foregroundColor(.blue)
-                                     .onTapGesture {
-                                     isAlertViewVisible.toggle()
-                                     circleIsEnlarged[6].toggle()
-                                     delay(seconds: 0.25) {
-                                     circleIsEnlarged[6].toggle()
-                                     }
-                                     }
-                                     */
-                                    .offset(y: yOffset)
-                                                    .id("scroll")
-                                                    .clipped()
-                                                    .coordinateSpace(name: "scroll")
-                                }
-                                .onAppear {
-                                                scrollViewProxy.scrollTo("scroll", anchor: .top)
-                                            }
-                                //.frame(width: 33.0, height: 105.8) // Possible dimension contraints for ScrollView to allow tapping on RoundedRectangle
+                                )
                             }
                             .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
                         }
+                        // when both position and frame ore commented out, works with upper section only
+                        //.frame(width: UIScreen.main.bounds.size.width, height: 300)
+                        .clipped()
+                        .border(Color.red)
                     }
                 }
             }
         }
-    }
-    
-    private func filterUserDefaultsData(withPrefix prefix: String) -> [String: Any] {
-        var filteredData: [String: Any] = [:]
-        
-        let allUserDefaultsData = UserDefaults.standard.dictionaryRepresentation()
-        for (key, value) in allUserDefaultsData {
-            if key.hasPrefix(prefix) {
-                filteredData[key] = value
-            }
-        }
-        //print(filteredData)
-        return filteredData
     }
     
     
@@ -171,7 +127,7 @@ struct CircleView: View {
     var body: some View {
         Circle()
             .frame(width: isEnlarged ? 33 : 30, height: isEnlarged ? 33 : 30)
-            .foregroundColor(.yellow)
+        //.foregroundColor(.yellow)
             .overlay(
                 Circle()
                     .stroke(Color.white, lineWidth: 1)
@@ -240,23 +196,5 @@ struct UserMessageView: View {
 struct HomeView: View {
     var body: some View {
         Text("Take a screenshot!")
-    }
-}
-
-struct ViewOffsetKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0.0
-
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
-    }
-}
-
-extension UIColor {
-    convenience init(hex: UInt32, alpha: CGFloat = 1.0) {
-        let red = CGFloat((hex & 0xFF0000) >> 16) / 255.0
-        let green = CGFloat((hex & 0x00FF00) >> 8) / 255.0
-        let blue = CGFloat(hex & 0x0000FF) / 255.0
-        
-        self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
 }

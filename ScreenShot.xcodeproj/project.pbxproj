@@ -13,6 +13,7 @@
 		100812262AC9F1C4007D16C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 100812252AC9F1C4007D16C8 /* Assets.xcassets */; };
 		100812292AC9F1C4007D16C8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 100812282AC9F1C4007D16C8 /* Preview Assets.xcassets */; };
 		108422A92ACDB61D000D1486 /* PhotoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108422A82ACDB61D000D1486 /* PhotoHelper.swift */; };
+		10B3DD592B03BF55000729E8 /* delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B3DD582B03BF55000729E8 /* delete.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		100812282AC9F1C4007D16C8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		108422A82ACDB61D000D1486 /* PhotoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoHelper.swift; sourceTree = "<group>"; };
 		108422AA2ACDB8D4000D1486 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		10B3DD582B03BF55000729E8 /* delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = delete.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +42,7 @@
 		100812152AC9F1C3007D16C8 = {
 			isa = PBXGroup;
 			children = (
+				10B3DD582B03BF55000729E8 /* delete.swift */,
 				100812202AC9F1C3007D16C8 /* ScreenShot */,
 				1008121F2AC9F1C3007D16C8 /* Products */,
 			);
@@ -146,6 +149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				100812242AC9F1C3007D16C8 /* ContentView.swift in Sources */,
+				10B3DD592B03BF55000729E8 /* delete.swift in Sources */,
 				108422A92ACDB61D000D1486 /* PhotoHelper.swift in Sources */,
 				100812222AC9F1C3007D16C8 /* ScreenShotApp.swift in Sources */,
 				10021C462AD85F1A00C8ACCB /* ScreenshotDetector.swift in Sources */,
