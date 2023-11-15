@@ -11,8 +11,6 @@ struct ContentView: View {
     //@State private var albumNames = ["Red Album (Screenshot)", "Green Album (Screenshot)", "", "", "", "", nil]
     let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
     //@State private var dummyDict: [String: Bool] = ["Red Album": false, "Green Album": false, "Blue Album": false]
-    @State private var contentHeight: CGFloat = 0
-    @State private var scrollViewHeight: CGFloat = 200 // Set your desired height
     let defaults = UserDefaults.standard
     
     var body: some View {
@@ -26,73 +24,57 @@ struct ContentView: View {
             }
             // Add animation and proper overlay settings here
             if screenshotDetector.showView {
-                GeometryReader { geo in
                     ZStack {
                         RoundedRectangleView(isEnlarged: $rectIsEnlarged)
-                        .frame(width: 100, height: 161.8) // RoundedRect dimensions
-                        .foregroundColor(.gray)
-                        .opacity(0.5)
-                        .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
-                        .gesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { _ in
-                                    rectIsEnlarged.toggle()
-                                    screenshotDetector.restartTimer()
-                                }
-                                .onEnded { _ in
-                                    rectIsEnlarged.toggle()
-                                    screenshotDetector.restartTimer()
-                                }
-                        )
-                        // 🔴 🔵 🟢
-                        ScrollView(showsIndicators: false) {
-                            // Three small circles inside the rectangle
-                            HStack {
-                                VStack {
-                                    // Make this stack have same tap property as parent rect for timer
-                                    CircleView(isEnlarged: $circleIsEnlarged[0])
-                                    // Rewrite button actions as function for readability
-                                        .foregroundColor(.red)
-                                        .onTapGesture {
-                                            let savedAlbumName = defaults.object(forKey: "0")
-                                            buttonIsTapped(circleNum: 0, albumName: savedAlbumName as! String)
-                                        }
-                                    
-                                    CircleView(isEnlarged: $circleIsEnlarged[1])
-                                        .foregroundColor(.green)
-                                        .onTapGesture {
-                                            let savedAlbumName = defaults.object(forKey: "1")
-                                            buttonIsTapped(circleNum: 1, albumName: savedAlbumName as! String)
-                                        }
-                                    
-                                    CircleView(isEnlarged: $circleIsEnlarged[6])
-                                        .foregroundColor(.blue)
-                                        .onTapGesture {
-                                            isAlertViewVisible.toggle()
-                                            circleIsEnlarged[6].toggle()
-                                            delay(seconds: 0.25) {
-                                                circleIsEnlarged[6].toggle()
-                                            }
-                                        }
-                                }
-                                .background(
-                                    GeometryReader { contentGeo in
-                                        Color.clear
-                                            .onAppear {
-                                                self.contentHeight = contentGeo.size.height
-                                            }
-                                    }
-                                )
-                            }
+                            .frame(width: 100, height: 161.8) // RoundedRect dimensions
+                            .foregroundColor(.gray)
+                            .opacity(0.5)
                             .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
+                            .gesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { _ in
+                                        rectIsEnlarged.toggle()
+                                        screenshotDetector.restartTimer()
+                                    }
+                                    .onEnded { _ in
+                                        rectIsEnlarged.toggle()
+                                        screenshotDetector.restartTimer()
+                                    }
+                            )
+                        ScrollView {
+                            VStack {
+                                // Make this stack have same tap property as parent rect for timer
+                                CircleView(isEnlarged: $circleIsEnlarged[0])
+                                // Rewrite button actions as function for readability
+                                    .foregroundColor(.red)
+                                    .onTapGesture {
+                                        let savedAlbumName = defaults.object(forKey: "SS-0")
+                                        buttonIsTapped(circleNum: 0, albumName: savedAlbumName as! String)
+                                    }
+                                
+                                CircleView(isEnlarged: $circleIsEnlarged[1])
+                                    .foregroundColor(.green)
+                                    .onTapGesture {
+                                        let savedAlbumName = defaults.object(forKey: "SS-1")
+                                        buttonIsTapped(circleNum: 1, albumName: savedAlbumName as! String)
+                                    }
+                                
+                                CircleView(isEnlarged: $circleIsEnlarged[6])
+                                    .foregroundColor(.blue)
+                                    .onTapGesture {
+                                        isAlertViewVisible.toggle()
+                                        circleIsEnlarged[6].toggle()
+                                        delay(seconds: 0.25) {
+                                            circleIsEnlarged[6].toggle()
+                                        }
+                                    }
+                            }
                         }
-                        // when both position and frame ore commented out, works with upper section only
-                        //.frame(width: UIScreen.main.bounds.size.width, height: 300)
-                        .clipped()
-                        .border(Color.red)
+                        .frame(width: 100, height: 161.8 / 1.5)
+                        .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
+                        .background(Color.gray.opacity(0.1))
                     }
                 }
-            }
         }
     }
     
