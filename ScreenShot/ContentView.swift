@@ -24,57 +24,57 @@ struct ContentView: View {
             }
             // Add animation and proper overlay settings here
             if screenshotDetector.showView {
-                    ZStack {
-                        RoundedRectangleView(isEnlarged: $rectIsEnlarged)
-                            .frame(width: 100, height: 161.8) // RoundedRect dimensions
-                            .foregroundColor(.gray)
-                            .opacity(0.5)
-                            .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
-                            .gesture(
-                                DragGesture(minimumDistance: 0)
-                                    .onChanged { _ in
-                                        rectIsEnlarged.toggle()
-                                        screenshotDetector.restartTimer()
-                                    }
-                                    .onEnded { _ in
-                                        rectIsEnlarged.toggle()
-                                        screenshotDetector.restartTimer()
-                                    }
-                            )
-                        ScrollView {
-                            VStack {
-                                // Make this stack have same tap property as parent rect for timer
-                                CircleView(isEnlarged: $circleIsEnlarged[0])
-                                // Rewrite button actions as function for readability
-                                    .foregroundColor(.red)
-                                    .onTapGesture {
-                                        let savedAlbumName = defaults.object(forKey: "SS-0")
-                                        buttonIsTapped(circleNum: 0, albumName: savedAlbumName as! String)
-                                    }
-                                
-                                CircleView(isEnlarged: $circleIsEnlarged[1])
-                                    .foregroundColor(.green)
-                                    .onTapGesture {
-                                        let savedAlbumName = defaults.object(forKey: "SS-1")
-                                        buttonIsTapped(circleNum: 1, albumName: savedAlbumName as! String)
-                                    }
-                                
-                                CircleView(isEnlarged: $circleIsEnlarged[6])
-                                    .foregroundColor(.blue)
-                                    .onTapGesture {
-                                        isAlertViewVisible.toggle()
-                                        circleIsEnlarged[6].toggle()
-                                        delay(seconds: 0.25) {
-                                            circleIsEnlarged[6].toggle()
-                                        }
-                                    }
-                            }
-                        }
-                        .frame(width: 100, height: 161.8 / 1.5)
+                ZStack {
+                    RoundedRectangleView(isEnlarged: $rectIsEnlarged)
+                        .frame(width: 100, height: 161.8) // RoundedRect dimensions
+                        .foregroundColor(.gray)
+                        .opacity(0.5)
                         .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
-                        .background(Color.gray.opacity(0.1))
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { _ in
+                                    rectIsEnlarged.toggle()
+                                    screenshotDetector.restartTimer()
+                                }
+                                .onEnded { _ in
+                                    rectIsEnlarged.toggle()
+                                    screenshotDetector.restartTimer()
+                                }
+                        )
+                    ScrollView {
+                        VStack {
+                            // Make this stack have same tap property as parent rect for timer
+                            CircleView(isEnlarged: $circleIsEnlarged[0])
+                            // Rewrite button actions as function for readability
+                                .foregroundColor(.red)
+                                .onTapGesture {
+                                    let savedAlbumName = defaults.object(forKey: "SS-0")
+                                    buttonIsTapped(circleNum: 0, albumName: savedAlbumName as! String)
+                                }
+                            
+                            CircleView(isEnlarged: $circleIsEnlarged[1])
+                                .foregroundColor(.green)
+                                .onTapGesture {
+                                    let savedAlbumName = defaults.object(forKey: "SS-1")
+                                    buttonIsTapped(circleNum: 1, albumName: savedAlbumName as! String)
+                                }
+                            
+                            CircleView(isEnlarged: $circleIsEnlarged[6])
+                                .foregroundColor(.blue)
+                                .onTapGesture {
+                                    isAlertViewVisible.toggle()
+                                    circleIsEnlarged[6].toggle()
+                                    delay(seconds: 0.25) {
+                                        circleIsEnlarged[6].toggle()
+                                    }
+                                }
+                        }
                     }
+                    .frame(width: 100, height: 161.8 / 1.5)
+                    .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
+                    .background(Color.gray.opacity(0.1))
                 }
+            }
         }
     }
     
@@ -102,7 +102,6 @@ struct ContentView: View {
         }
     }
 }
-
 
 struct CircleView: View {
     @Binding var isEnlarged: Bool
@@ -177,6 +176,12 @@ struct UserMessageView: View {
 
 struct HomeView: View {
     var body: some View {
-        Text("Take a screenshot!")
+        VStack {
+            // Place rotating LottieView struct
+            LottieView(animationName: "Starfish", loopMode: .loop)
+                .frame(width: 200, height: 200) // temporary fix: forces bottom text up and may only work on iPhone 11
+            Text("Take a screenshot!")
+            Text("Animation credit: @tomfabre")
+        }
     }
 }

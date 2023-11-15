@@ -9,7 +9,6 @@ import SwiftUI
 import Foundation
 
 class ScreenshotDetector: ObservableObject {
-    
     static let shared = ScreenshotDetector()
     
     @Published var showView: Bool = false
