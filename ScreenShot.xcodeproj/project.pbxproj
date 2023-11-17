@@ -12,9 +12,20 @@
 		100812242AC9F1C3007D16C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100812232AC9F1C3007D16C8 /* ContentView.swift */; };
 		100812262AC9F1C4007D16C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 100812252AC9F1C4007D16C8 /* Assets.xcassets */; };
 		100812292AC9F1C4007D16C8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 100812282AC9F1C4007D16C8 /* Preview Assets.xcassets */; };
+		105CDE552B07BDEB00C11CA3 /* Orca.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE4C2B07BDEB00C11CA3 /* Orca.json */; };
+		105CDE562B07BDEB00C11CA3 /* Turtle.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE4D2B07BDEB00C11CA3 /* Turtle.json */; };
+		105CDE572B07BDEB00C11CA3 /* Ostrich.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE4E2B07BDEB00C11CA3 /* Ostrich.json */; };
+		105CDE582B07BDEB00C11CA3 /* Rhino.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE4F2B07BDEB00C11CA3 /* Rhino.json */; };
+		105CDE592B07BDEB00C11CA3 /* Whale.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE502B07BDEB00C11CA3 /* Whale.json */; };
+		105CDE5A2B07BDEB00C11CA3 /* Deer.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE512B07BDEB00C11CA3 /* Deer.json */; };
+		105CDE5B2B07BDEB00C11CA3 /* Bull.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE522B07BDEB00C11CA3 /* Bull.json */; };
+		105CDE5C2B07BDEB00C11CA3 /* Chicken.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE532B07BDEB00C11CA3 /* Chicken.json */; };
+		105CDE5D2B07BDEB00C11CA3 /* Jellyfish.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE542B07BDEB00C11CA3 /* Jellyfish.json */; };
 		108422A92ACDB61D000D1486 /* PhotoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108422A82ACDB61D000D1486 /* PhotoHelper.swift */; };
+		10B6A6332B07EC0B0000D230 /* AllAnimalsAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 10B6A6322B07EC0B0000D230 /* AllAnimalsAnimation.json */; };
+		10B6A6352B07F0990000D230 /* Lottie.json in Resources */ = {isa = PBXBuildFile; fileRef = 10B6A6342B07F0990000D230 /* Lottie.json */; };
+		10B6A6372B080DC00000D230 /* AllAnimals.json in Resources */ = {isa = PBXBuildFile; fileRef = 10B6A6362B080DC00000D230 /* AllAnimals.json */; };
 		10CD9D9D2B05681100DF984B /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CD9D9C2B05681100DF984B /* LottieView.swift */; };
-		10CD9DA02B056AAB00DF984B /* NewAlbumAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 10CD9D9F2B056AAB00DF984B /* NewAlbumAnimation.json */; };
 		10CD9DA22B05736100DF984B /* Starfish.json in Resources */ = {isa = PBXBuildFile; fileRef = 10CD9DA12B05736100DF984B /* Starfish.json */; };
 		4A4D08BA8F4FC0F627BF1EA4 /* Pods_ScreenShot.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E586548B70C9BE5E85E99A9 /* Pods_ScreenShot.framework */; };
 /* End PBXBuildFile section */
@@ -26,10 +37,21 @@
 		100812232AC9F1C3007D16C8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		100812252AC9F1C4007D16C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		100812282AC9F1C4007D16C8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		105CDE4C2B07BDEB00C11CA3 /* Orca.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Orca.json; sourceTree = "<group>"; };
+		105CDE4D2B07BDEB00C11CA3 /* Turtle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Turtle.json; sourceTree = "<group>"; };
+		105CDE4E2B07BDEB00C11CA3 /* Ostrich.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Ostrich.json; sourceTree = "<group>"; };
+		105CDE4F2B07BDEB00C11CA3 /* Rhino.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Rhino.json; sourceTree = "<group>"; };
+		105CDE502B07BDEB00C11CA3 /* Whale.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Whale.json; sourceTree = "<group>"; };
+		105CDE512B07BDEB00C11CA3 /* Deer.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Deer.json; sourceTree = "<group>"; };
+		105CDE522B07BDEB00C11CA3 /* Bull.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Bull.json; sourceTree = "<group>"; };
+		105CDE532B07BDEB00C11CA3 /* Chicken.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Chicken.json; sourceTree = "<group>"; };
+		105CDE542B07BDEB00C11CA3 /* Jellyfish.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Jellyfish.json; sourceTree = "<group>"; };
 		108422A82ACDB61D000D1486 /* PhotoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoHelper.swift; sourceTree = "<group>"; };
 		108422AA2ACDB8D4000D1486 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		10B6A6322B07EC0B0000D230 /* AllAnimalsAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AllAnimalsAnimation.json; sourceTree = "<group>"; };
+		10B6A6342B07F0990000D230 /* Lottie.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Lottie.json; sourceTree = "<group>"; };
+		10B6A6362B080DC00000D230 /* AllAnimals.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AllAnimals.json; sourceTree = "<group>"; };
 		10CD9D9C2B05681100DF984B /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
-		10CD9D9F2B056AAB00DF984B /* NewAlbumAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = NewAlbumAnimation.json; sourceTree = "<group>"; };
 		10CD9DA12B05736100DF984B /* Starfish.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Starfish.json; sourceTree = "<group>"; };
 		4E586548B70C9BE5E85E99A9 /* Pods_ScreenShot.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ScreenShot.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8846DE0FC54A0EE8416B11B4 /* Pods-ScreenShot.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScreenShot.debug.xcconfig"; path = "Target Support Files/Pods-ScreenShot/Pods-ScreenShot.debug.xcconfig"; sourceTree = "<group>"; };
@@ -93,8 +115,19 @@
 		10CD9D9E2B0568C900DF984B /* LottieFiles */ = {
 			isa = PBXGroup;
 			children = (
+				10B6A6362B080DC00000D230 /* AllAnimals.json */,
+				105CDE522B07BDEB00C11CA3 /* Bull.json */,
+				105CDE532B07BDEB00C11CA3 /* Chicken.json */,
+				105CDE512B07BDEB00C11CA3 /* Deer.json */,
+				105CDE542B07BDEB00C11CA3 /* Jellyfish.json */,
+				105CDE4C2B07BDEB00C11CA3 /* Orca.json */,
+				105CDE4E2B07BDEB00C11CA3 /* Ostrich.json */,
+				105CDE4F2B07BDEB00C11CA3 /* Rhino.json */,
+				105CDE4D2B07BDEB00C11CA3 /* Turtle.json */,
+				105CDE502B07BDEB00C11CA3 /* Whale.json */,
 				10CD9DA12B05736100DF984B /* Starfish.json */,
-				10CD9D9F2B056AAB00DF984B /* NewAlbumAnimation.json */,
+				10B6A6322B07EC0B0000D230 /* AllAnimalsAnimation.json */,
+				10B6A6342B07F0990000D230 /* Lottie.json */,
 			);
 			path = LottieFiles;
 			sourceTree = "<group>";
@@ -176,10 +209,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				105CDE552B07BDEB00C11CA3 /* Orca.json in Resources */,
+				105CDE572B07BDEB00C11CA3 /* Ostrich.json in Resources */,
+				10B6A6352B07F0990000D230 /* Lottie.json in Resources */,
+				105CDE5B2B07BDEB00C11CA3 /* Bull.json in Resources */,
+				105CDE582B07BDEB00C11CA3 /* Rhino.json in Resources */,
+				105CDE592B07BDEB00C11CA3 /* Whale.json in Resources */,
+				10B6A6332B07EC0B0000D230 /* AllAnimalsAnimation.json in Resources */,
+				105CDE5C2B07BDEB00C11CA3 /* Chicken.json in Resources */,
 				100812292AC9F1C4007D16C8 /* Preview Assets.xcassets in Resources */,
+				10B6A6372B080DC00000D230 /* AllAnimals.json in Resources */,
+				105CDE5A2B07BDEB00C11CA3 /* Deer.json in Resources */,
 				10CD9DA22B05736100DF984B /* Starfish.json in Resources */,
-				10CD9DA02B056AAB00DF984B /* NewAlbumAnimation.json in Resources */,
+				105CDE562B07BDEB00C11CA3 /* Turtle.json in Resources */,
 				100812262AC9F1C4007D16C8 /* Assets.xcassets in Resources */,
+				105CDE5D2B07BDEB00C11CA3 /* Jellyfish.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

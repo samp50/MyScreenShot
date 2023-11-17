@@ -15,7 +15,8 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            HomeView()
+            //HomeView()
+            TransitionView()
             if isUserMessageVisible {
                 UserMessageView()
             }
@@ -175,13 +176,61 @@ struct UserMessageView: View {
 }
 
 struct HomeView: View {
+    @State private var backgroundColor: Color = Color.blue
     var body: some View {
         VStack {
-            // Place rotating LottieView struct
-            LottieView(animationName: "Starfish", loopMode: .loop)
+            // Place rotating LottieView struct here - should also change background
+            // color with cool transition and dynamic background effect
+            Rectangle()
+                .foregroundColor(backgroundColor)
+                .edgesIgnoringSafeArea(.all)
+                .onAppear {
+                    // Start the timer when the view appears
+                    startAnimationBackgroundTransition()
+                }
+            /*LottieView(animationName: "Starfish", loopMode: .loop)
                 .frame(width: 200, height: 200) // temporary fix: forces bottom text up and may only work on iPhone 11
+             */
             Text("Take a screenshot!")
             Text("Animation credit: @tomfabre")
+        }
+    }
+    
+    private func startAnimationBackgroundTransition() {
+        // Create a timer that fires every five seconds
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
+            // Change the background color here
+            // For demonstration, I'm alternating between blue and red
+            if backgroundColor == Color.blue {
+                backgroundColor = Color.red
+            } else {
+                backgroundColor = Color.blue
+            }
+        }
+    }
+}
+
+struct TransitionView: View {
+    @State private var backgroundColors: [Color] = [.red, .green, .blue, .orange]
+    @State private var currentIndex = 0
+
+    var body: some View {
+        ZStack {
+            backgroundColors[currentIndex]
+                .edgesIgnoringSafeArea(.all)
+            VStack {
+                LottieView(animationName: "AllAnimals", loopMode: .loop)
+                    .frame(width: 400, height: 400) // temporary fix: forces bottom text up and may only work on iPhone 11
+                Text("Take a screenshot!")
+                Text("Animation credit: @tomfabre")
+            }
+        }
+        .onAppear {
+            Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
+                withAnimation {
+                    currentIndex = (currentIndex + 1) % backgroundColors.count
+                }
+            }
         }
     }
 }
