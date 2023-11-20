@@ -1,5 +1,6 @@
 import SwiftUI
 import Foundation
+import CoreMotion
 
 struct ContentView: View {
     @EnvironmentObject var screenshotDetector: ScreenshotDetector
@@ -7,11 +8,14 @@ struct ContentView: View {
     @State private var isUserMessageVisible = false
     @State private var isAlertViewVisible = false
     @State private var rectIsEnlarged = false
-    @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false, false] // 2 default Album name values + 5 extras -- make sure to write in alert for >7 album creation attempts
-    //@State private var albumNames = ["Red Album (Screenshot)", "Green Album (Screenshot)", "", "", "", "", nil]
+    @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false, false]
+    @State private var motionManager = CMMotionManager()
+    @State private var xAcceleration: CGFloat = 0.0
+    @State private var yAcceleration: CGFloat = 0.0
+    
     let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
-    //@State private var dummyDict: [String: Bool] = ["Red Album": false, "Green Album": false, "Blue Album": false]
     let defaults = UserDefaults.standard
+
     
     var body: some View {
         ZStack {
@@ -41,26 +45,22 @@ struct ContentView: View {
                                     rectIsEnlarged.toggle()
                                     screenshotDetector.restartTimer()
                                 }
-                        )
+                            )
                     ScrollView {
                         VStack {
-                            // Make this stack have same tap property as parent rect for timer
-                            CircleView(isEnlarged: $circleIsEnlarged[0])
-                            // Rewrite button actions as function for readability
-                                .foregroundColor(.red)
-                                .onTapGesture {
-                                    let savedAlbumName = defaults.object(forKey: "SS-0")
-                                    buttonIsTapped(circleNum: 0, albumName: savedAlbumName as! String)
-                                }
-                            
-                            CircleView(isEnlarged: $circleIsEnlarged[1])
-                                .foregroundColor(.green)
-                                .onTapGesture {
-                                    let savedAlbumName = defaults.object(forKey: "SS-1")
-                                    buttonIsTapped(circleNum: 1, albumName: savedAlbumName as! String)
-                                }
-                            
-                            CircleView(isEnlarged: $circleIsEnlarged[6])
+                            // Iterate through all user defaults with SS- prefixes, adding a circle view for each item in dictionary
+                            let existingPhotoCategories = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-")
+                            ForEach(0..<existingPhotoCategories.count, id: \.self) { val in
+                                CircleView(isEnlarged: $circleIsEnlarged[val])
+                                // Rewrite button actions as function for readability
+                                    .foregroundColor(.red)
+                                    .onTapGesture {
+                                        let savedAlbumName = defaults.object(forKey: "SS-\(val)")
+                                        buttonIsTapped(circleNum:val, albumName: savedAlbumName as! String)
+                                    }
+                            }
+                            // Add new category button
+                            CircleView(isEnlarged:$circleIsEnlarged[6])
                                 .foregroundColor(.blue)
                                 .onTapGesture {
                                     isAlertViewVisible.toggle()
@@ -71,7 +71,7 @@ struct ContentView: View {
                                 }
                         }
                     }
-                    .frame(width: 100, height: 161.8 / 1.5)
+                    .frame(width: 110, height: 161.8 / 1.5)
                     .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
                     .background(Color.gray.opacity(0.1))
                 }
@@ -109,7 +109,6 @@ struct CircleView: View {
     var body: some View {
         Circle()
             .frame(width: isEnlarged ? 33 : 30, height: isEnlarged ? 33 : 30)
-        //.foregroundColor(.yellow)
             .overlay(
                 Circle()
                     .stroke(Color.white, lineWidth: 1)
@@ -119,9 +118,39 @@ struct CircleView: View {
 
 struct RoundedRectangleView: View {
     @Binding var isEnlarged: Bool
+    @State private var motionManager = CMMotionManager()
+    @State private var xAcceleration: CGFloat = 0.0
+    @State private var yAcceleration: CGFloat = 0.0
+    
     var body: some View {
         RoundedRectangle(cornerRadius: isEnlarged ? 29.1 : 30)
             .frame(width: isEnlarged ? 100 : 97, height: isEnlarged ? 171.8 : 166.8)
+            /*.offset(x: xAcceleration * 10, y: yAcceleration * 10)
+            .onAppear {
+                startMotionUpdates()
+            }
+            .onDisappear {
+                stopMotionUpdates()
+            }*/
+    }
+    
+    private func startMotionUpdates() {
+        guard motionManager.isDeviceMotionAvailable else { return }
+
+        motionManager.deviceMotionUpdateInterval = 0.1
+
+        motionManager.startDeviceMotionUpdates(to: .main) { motion, error in
+            guard let motion = motion else { return }
+
+            // Extracting acceleration values
+            let gravity = motion.gravity
+            xAcceleration = CGFloat(gravity.x)
+            yAcceleration = CGFloat(gravity.y)
+        }
+    }
+
+    private func stopMotionUpdates() {
+        motionManager.stopDeviceMotionUpdates()
     }
 }
 
@@ -137,8 +166,18 @@ struct AlertView: View {
                 TextField("Enter text", text: $enteredText)
                 Button() {
                     if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                        PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: enteredText, isUserCreated: true) // this still makes dupicate albums!?! probably okay to leave for now as will never really be a problem
+                        PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: enteredText, isUserCreated: true)
+                        let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count
+
+                        UserDefaults.standard.set("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount + 1)")
+                        UserDefaults.standard.synchronize()
                     }
+                    // Need to establish COUNT for user-created albums
+                    // Iterate over this count, plus two defaults and user-creation category                    
+                    //let defaults = UserDefaults.standard
+                    //defaults.set(enteredText + " (Screenshot)", forKey: "SS-0");
+                    
+                    
                 } label: {
                     Text("Submit")
                 }
@@ -154,6 +193,24 @@ struct ExampleTextView: View {
     var body: some View {
         Text("EXAMPLE TEXT")
             .transition(.opacity)
+    }
+}
+
+class UserDefaultsController {
+    //    UserDefaultsController().iterateUserDefaults(withPrefix: "SS-")
+    public func iterateUserDefaults(withPrefix prefix: String) -> [Dictionary<String, Any>.Keys.Element] {
+        let allKeys = UserDefaults.standard.dictionaryRepresentation().keys
+        let filteredKeys = allKeys.filter { $0.hasPrefix(prefix) }
+
+        // Iterate through the filtered keys and retrieve corresponding values
+        for key in filteredKeys {
+            if let value = UserDefaults.standard.value(forKey: key) {
+                print("Key: \(key), Value: \(value)")
+                // Do something with the key and value
+            }
+        }
+        print(type(of: filteredKeys))
+        return filteredKeys
     }
 }
 
@@ -175,44 +232,13 @@ struct UserMessageView: View {
     }
 }
 
-struct HomeView: View {
-    @State private var backgroundColor: Color = Color.blue
-    var body: some View {
-        VStack {
-            // Place rotating LottieView struct here - should also change background
-            // color with cool transition and dynamic background effect
-            Rectangle()
-                .foregroundColor(backgroundColor)
-                .edgesIgnoringSafeArea(.all)
-                .onAppear {
-                    // Start the timer when the view appears
-                    startAnimationBackgroundTransition()
-                }
-            /*LottieView(animationName: "Starfish", loopMode: .loop)
-                .frame(width: 200, height: 200) // temporary fix: forces bottom text up and may only work on iPhone 11
-             */
-            Text("Take a screenshot!")
-            Text("Animation credit: @tomfabre")
-        }
-    }
-    
-    private func startAnimationBackgroundTransition() {
-        // Create a timer that fires every five seconds
-        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-            // Change the background color here
-            // For demonstration, I'm alternating between blue and red
-            if backgroundColor == Color.blue {
-                backgroundColor = Color.red
-            } else {
-                backgroundColor = Color.blue
-            }
-        }
-    }
-}
-
 struct TransitionView: View {
-    @State private var backgroundColors: [Color] = [.red, .green, .blue, .orange]
+    @State private var backgroundColors: [Color] = [.red, .green, .blue, .orange, .cyan]
     @State private var currentIndex = 0
+    
+    @State var motionManager = CMMotionManager()
+    @State var xAcceleration: CGFloat = 0.0
+    @State var yAcceleration: CGFloat = 0.0
 
     var body: some View {
         ZStack {
@@ -221,8 +247,23 @@ struct TransitionView: View {
             VStack {
                 LottieView(animationName: "AllAnimals", loopMode: .loop)
                     .frame(width: 400, height: 400) // temporary fix: forces bottom text up and may only work on iPhone 11
-                Text("Take a screenshot!")
-                Text("Animation credit: @tomfabre")
+                    .offset(x: xAcceleration * 10, y: yAcceleration * 10)
+                    .onAppear {
+                        startMotionUpdates()
+                    }
+                    .onDisappear {
+                        stopMotionUpdates()
+                    }
+                Text("Take a screenshot! \n Animation credit: @tomfabre")
+                    .multilineTextAlignment(.center)
+                    .offset(x: xAcceleration * 10, y: yAcceleration * 10)
+                    .onAppear {
+                        startMotionUpdates()
+                    }
+                    .onDisappear {
+                        stopMotionUpdates()
+                    }
+                    
             }
         }
         .onAppear {
@@ -232,5 +273,61 @@ struct TransitionView: View {
                 }
             }
         }
+    }
+    private func startMotionUpdates() {
+        guard motionManager.isDeviceMotionAvailable else { return }
+
+        motionManager.deviceMotionUpdateInterval = 0.1
+
+        motionManager.startDeviceMotionUpdates(to: .main) { motion, error in
+            guard let motion = motion else { return }
+
+            // Extracting acceleration values
+            let gravity = motion.gravity
+            xAcceleration = CGFloat(gravity.x)
+            yAcceleration = CGFloat(gravity.y)
+        }
+    }
+
+    private func stopMotionUpdates() {
+        motionManager.stopDeviceMotionUpdates()
+    }
+}
+
+struct ParallaxRectangle: View {
+    @State private var motionManager = CMMotionManager()
+    @State private var xAcceleration: CGFloat = 0.0
+    @State private var yAcceleration: CGFloat = 0.0
+
+    var body: some View {
+        Rectangle()
+            .frame(width: 200, height: 100)
+            .foregroundColor(.blue)
+            .offset(x: xAcceleration * 20, y: yAcceleration * 20)
+            .onAppear {
+                startMotionUpdates()
+            }
+            .onDisappear {
+                stopMotionUpdates()
+            }
+    }
+
+    private func startMotionUpdates() {
+        guard motionManager.isDeviceMotionAvailable else { return }
+
+        motionManager.deviceMotionUpdateInterval = 0.1
+
+        motionManager.startDeviceMotionUpdates(to: .main) { motion, error in
+            guard let motion = motion else { return }
+
+            // Extracting acceleration values
+            let gravity = motion.gravity
+            xAcceleration = CGFloat(gravity.x)
+            yAcceleration = CGFloat(gravity.y)
+        }
+    }
+
+    private func stopMotionUpdates() {
+        motionManager.stopDeviceMotionUpdates()
     }
 }

@@ -8,6 +8,7 @@
 import Foundation
 import Lottie
 import SwiftUI
+import CoreMotion
 
 struct LottieView: UIViewRepresentable {
     @State var animationName: String

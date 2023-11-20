@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-//public var screenShotDetected: Bool = false
 
 @main
 struct ScreenShotApp: App {
+    
     @StateObject var screenshotDetector = ScreenshotDetector()
     var body: some Scene {
         WindowGroup {
