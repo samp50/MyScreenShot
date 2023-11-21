@@ -9,6 +9,7 @@ struct ContentView: View {
     @State private var isAlertViewVisible = false
     @State private var rectIsEnlarged = false
     @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false, false]
+    @State private var backgroundColors: [Color] = [.red, .green, .blue, .orange, .cyan]
     @State private var motionManager = CMMotionManager()
     @State private var xAcceleration: CGFloat = 0.0
     @State private var yAcceleration: CGFloat = 0.0
@@ -53,22 +54,32 @@ struct ContentView: View {
                             ForEach(0..<existingPhotoCategories.count, id: \.self) { val in
                                 CircleView(isEnlarged: $circleIsEnlarged[val])
                                 // Rewrite button actions as function for readability
-                                    .foregroundColor(.red)
+                                    .foregroundColor(backgroundColors[val])
                                     .onTapGesture {
                                         let savedAlbumName = defaults.object(forKey: "SS-\(val)")
                                         buttonIsTapped(circleNum:val, albumName: savedAlbumName as! String)
                                     }
                             }
                             // Add new category button
-                            CircleView(isEnlarged:$circleIsEnlarged[6])
-                                .foregroundColor(.blue)
-                                .onTapGesture {
-                                    isAlertViewVisible.toggle()
-                                    circleIsEnlarged[6].toggle()
-                                    delay(seconds: 0.25) {
+                            ZStack {
+                                CircleView(isEnlarged:$circleIsEnlarged[6])
+                                    .foregroundColor(.blue)
+                                    .onTapGesture {
+                                        isAlertViewVisible.toggle()
                                         circleIsEnlarged[6].toggle()
+                                        delay(seconds: 0.25) {
+                                            circleIsEnlarged[6].toggle()
+                                        }
                                     }
-                                }
+                                Rectangle()
+                                    .foregroundColor(.white)
+                                    .frame(width: 20, height: 2)
+                                    .offset(y: 0)
+                                Rectangle()
+                                    .foregroundColor(.white)
+                                    .frame(width: 2, height: 20)
+                                    .offset(x: 0)
+                            }
                         }
                     }
                     .frame(width: 110, height: 161.8 / 1.5)
