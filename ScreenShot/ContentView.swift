@@ -1,3 +1,10 @@
+//
+//  ScreenshotDetector.swift
+//  ScreenShot
+//
+//  Created by Samuel Phillips on 10/12/23.
+//
+
 import SwiftUI
 import Foundation
 import CoreMotion
@@ -8,8 +15,9 @@ struct ContentView: View {
     @State private var isUserMessageVisible = false
     @State private var isAlertViewVisible = false
     @State private var rectIsEnlarged = false
+    @State private var isSheetViewVisible = false
     @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false, false]
-    @State private var backgroundColors: [Color] = [.red, .green, .blue, .orange, .cyan]
+    @State private var backgroundColors: [Color] = [.pink, .green, .blue, .orange, .cyan, .yellow]
     @State private var motionManager = CMMotionManager()
     @State private var xAcceleration: CGFloat = 0.0
     @State private var yAcceleration: CGFloat = 0.0
@@ -36,6 +44,7 @@ struct ContentView: View {
                         .foregroundColor(.gray)
                         .opacity(0.5)
                         .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
+                        .shadow(radius: 5)
                         .gesture(
                             DragGesture(minimumDistance: 0)
                                 .onChanged { _ in
@@ -56,14 +65,15 @@ struct ContentView: View {
                                 // Rewrite button actions as function for readability
                                     .foregroundColor(backgroundColors[val])
                                     .onTapGesture {
-                                        let savedAlbumName = defaults.object(forKey: "SS-\(val)")
+                                        let savedAlbumName = defaults.object(forKey: "SS-\(val - 1)")
+                                        print("savedAlbumName is:  \(savedAlbumName) for key: SS-\(val)") // del
                                         buttonIsTapped(circleNum:val, albumName: savedAlbumName as! String)
                                     }
                             }
                             // Add new category button
                             ZStack {
                                 CircleView(isEnlarged:$circleIsEnlarged[6])
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.white)
                                     .onTapGesture {
                                         isAlertViewVisible.toggle()
                                         circleIsEnlarged[6].toggle()
@@ -72,17 +82,17 @@ struct ContentView: View {
                                         }
                                     }
                                 Rectangle()
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.black)
                                     .frame(width: 20, height: 2)
                                     .offset(y: 0)
                                 Rectangle()
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.black)
                                     .frame(width: 2, height: 20)
                                     .offset(x: 0)
                             }
                         }
                     }
-                    .frame(width: 110, height: 161.8 / 1.5)
+                    .frame(width: 120, height: 120)
                     .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
                     .background(Color.gray.opacity(0.1))
                 }
@@ -165,6 +175,27 @@ struct RoundedRectangleView: View {
     }
 }
 
+struct SheetView: View {
+    @State private var showingAlert = false
+
+    var body: some View {
+        Text("")
+            .onAppear {
+                showingAlert = true
+            }
+            .confirmationDialog("Options", isPresented: $showingAlert, titleVisibility: .visible) {
+                   Button("Restart Demo") {
+//                                       selection = "Red"
+                   }
+
+                    Button("Clear All Albums and Screenshots", role: .destructive) {
+//                                       selection = "Green"
+                   }
+                
+               }
+    }
+}
+
 struct AlertView: View {
     @State private var showingAlert = false
     @State private var enteredText = ""
@@ -177,10 +208,11 @@ struct AlertView: View {
                 TextField("Enter text", text: $enteredText)
                 Button() {
                     if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                        PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: enteredText, isUserCreated: true)
-                        let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count
+                        PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: "\(enteredText) (Screenshot)", isUserCreated: true)
+                        let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count - 1
+                        print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
 
-                        UserDefaults.standard.set("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount + 1)")
+                        UserDefaults.standard.set("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
                         UserDefaults.standard.synchronize()
                     }
                     // Need to establish COUNT for user-created albums
@@ -234,6 +266,7 @@ struct UserMessageView: View {
                 .foregroundColor(.gray)
                 .opacity(0.5)
                 .cornerRadius(10)
+                .shadow(radius: 5)
             Text("Added image to album")
                 .foregroundColor(.white)
                 .font(.body)
@@ -244,8 +277,9 @@ struct UserMessageView: View {
 }
 
 struct TransitionView: View {
-    @State private var backgroundColors: [Color] = [.red, .green, .blue, .orange, .cyan]
+    @State private var backgroundColors: [Color] = [.green, .red, .orange, .cyan, .yellow, .purple]
     @State private var currentIndex = 0
+    @State private var presentAlert = false
     
     @State var motionManager = CMMotionManager()
     @State var xAcceleration: CGFloat = 0.0
@@ -259,6 +293,7 @@ struct TransitionView: View {
                 LottieView(animationName: "AllAnimals", loopMode: .loop)
                     .frame(width: 400, height: 400) // temporary fix: forces bottom text up and may only work on iPhone 11
                     .offset(x: xAcceleration * 10, y: yAcceleration * 10)
+                    .shadow(radius: 3) // delete?
                     .onAppear {
                         startMotionUpdates()
                     }
@@ -267,6 +302,7 @@ struct TransitionView: View {
                     }
                 Text("Take a screenshot! \n Animation credit: @tomfabre")
                     .multilineTextAlignment(.center)
+                    .font(Font.custom("Montserrat-Regular", size: 18))
                     .offset(x: xAcceleration * 10, y: yAcceleration * 10)
                     .onAppear {
                         startMotionUpdates()
@@ -274,7 +310,32 @@ struct TransitionView: View {
                     .onDisappear {
                         stopMotionUpdates()
                     }
-                    
+                
+                
+                Button("Options", role: .none) {
+                    Text("Delete")
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 1))
+                    }
+                    .onTapGesture {
+                        presentAlert.toggle()
+                        print("toggled")
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.blue)
+                    .confirmationDialog("Options", isPresented: $presentAlert, titleVisibility: .visible) {
+                           Button("Restart Demo") {
+//                                       selection = "Red"
+                           }
+
+                            Button("Clear All Albums and Screenshots", role: .destructive) {
+//                                       selection = "Green"
+                           }
+                        
+                       }
             }
         }
         .onAppear {
@@ -285,6 +346,7 @@ struct TransitionView: View {
             }
         }
     }
+    
     private func startMotionUpdates() {
         guard motionManager.isDeviceMotionAvailable else { return }
 
