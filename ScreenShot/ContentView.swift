@@ -11,7 +11,9 @@ import CoreMotion
 
 struct ContentView: View {
     @EnvironmentObject var screenshotDetector: ScreenshotDetector
-    
+    @State private var showingAlert = false
+    @State private var enteredText = ""
+    @State private var showingMaxAlbumsAlert = false
     @State private var isUserMessageVisible = false
     @State private var isAlertViewVisible = false
     @State private var rectIsEnlarged = false
@@ -24,7 +26,6 @@ struct ContentView: View {
     
     let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
     let defaults = UserDefaults.standard
-
     
     var body: some View {
         ZStack {
@@ -33,9 +34,9 @@ struct ContentView: View {
             if isUserMessageVisible {
                 UserMessageView()
             }
-            if isAlertViewVisible {
+            /*if isAlertViewVisible {
                 AlertView()
-            }
+            }*/
             // Add animation and proper overlay settings here
             if screenshotDetector.showView {
                 ZStack {
@@ -74,7 +75,7 @@ struct ContentView: View {
                                 CircleView(isEnlarged:$circleIsEnlarged[6])
                                     .foregroundColor(.white)
                                     .onTapGesture {
-                                        isAlertViewVisible.toggle()
+                                        showingAlert.toggle()
                                         circleIsEnlarged[6].toggle()
                                         delay(seconds: 0.25) {
                                             circleIsEnlarged[6].toggle()
@@ -96,6 +97,43 @@ struct ContentView: View {
                     .background(Color.gray.opacity(0.1))
                 }
             }
+        }
+        // New photo album alert
+        .alert("Enter new photo album name", isPresented: $showingAlert) {
+            TextField("Enter text", text: $enteredText)
+            Button() {
+                let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count
+                if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
+                    if existingPhotoCategoriesCount < 7 {
+                        PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: "\(enteredText) (Screenshot)", isUserCreated: true)
+                        print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
+                    } else {
+                        showingMaxAlbumsAlert.toggle()
+                    }
+                }
+                
+            } label: {
+                Text("Submit")
+            }
+            Button("Cancel", role: .cancel) {
+                print("User cancelled photo album selection.")
+            }
+        }
+        // Category limit alert
+        .alert(isPresented: $showingMaxAlbumsAlert) {
+            Alert(
+                title: Text("Cannot add category"),
+                message: Text("You can only add up to seven screenshot categories."),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+    }
+    
+    private func setUserDefaultsValue(_ value: Any?, forKey key: String) {
+        let userDefaultsQueue = DispatchQueue(label: "com.example.userDefaultsQueue")
+        userDefaultsQueue.sync {
+            UserDefaults.standard.set(value, forKey: key)
+            UserDefaults.standard.synchronize()
         }
     }
     
@@ -176,52 +214,6 @@ struct SheetView: View {
                 showingAlert = true
             }
             .confirmationDialog("Options", isPresented: $showingAlert, titleVisibility: .visible) { }
-    }
-}
-
-struct AlertView: View {
-    @State private var showingAlert = false
-    @State private var showingMaxAlbumsAlert = false
-    @State private var enteredText = ""
-    var body: some View {
-        Text("")
-            .onAppear {
-                showingAlert = true
-            }
-            .alert(isPresented: $showingMaxAlbumsAlert) {
-                Alert(
-                    title: Text("Cannot add category"),
-                    message: Text("You can only add up to seven screenshot categories."),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
-            .alert("Enter new photo album name", isPresented: $showingAlert) {
-                TextField("Enter text", text: $enteredText)
-                Button() {
-                    let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count
-                    if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                        if existingPhotoCategoriesCount < 7 {
-                            PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: "\(enteredText) (Screenshot)", isUserCreated: true)
-                            print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
-                            setUserDefaultsValue("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
-                        } else {
-                            showingMaxAlbumsAlert.toggle()
-                        }
-                    }
-                } label: {
-                    Text("Submit")
-                }
-                Button("Cancel", role: .cancel) {
-                    print("User cancelled photo album selection.")
-                }
-            }
-    }
-    let userDefaultsQueue = DispatchQueue(label: "com.example.userDefaultsQueue")
-    func setUserDefaultsValue(_ value: Any?, forKey key: String) {
-        userDefaultsQueue.sync {
-            UserDefaults.standard.set(value, forKey: key)
-            UserDefaults.standard.synchronize()
-        }
     }
 }
 
