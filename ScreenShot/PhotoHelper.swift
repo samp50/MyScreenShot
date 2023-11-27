@@ -158,4 +158,30 @@ class PhotoHelper {
             break
         }
     }
+    
+    func requestPhotoLibraryPermission() {
+        // Check the current authorization status
+        let status = PHPhotoLibrary.authorizationStatus()
+
+        switch status {
+        case .authorized:
+            // User has already granted access
+            print("Access to photo library is already authorized.")
+        case .denied, .restricted:
+            // User has denied or restricted access
+            print("Access to photo library is denied or restricted. Please enable in Settings.")
+        case .notDetermined:
+            // Request access
+            PHPhotoLibrary.requestAuthorization { newStatus in
+                if newStatus == .authorized {
+                    print("Access to photo library granted.")
+                } else {
+                    print("Access to photo library denied.")
+                }
+            }
+        @unknown default:
+            break
+        }
+    }
+
 }

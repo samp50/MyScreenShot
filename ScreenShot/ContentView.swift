@@ -65,8 +65,7 @@ struct ContentView: View {
                                 // Rewrite button actions as function for readability
                                     .foregroundColor(backgroundColors[val])
                                     .onTapGesture {
-                                        let savedAlbumName = defaults.object(forKey: "SS-\(val - 1)")
-                                        print("savedAlbumName is:  \(savedAlbumName) for key: SS-\(val)") // del
+                                        let savedAlbumName = defaults.object(forKey: "SS-\(val)")
                                         buttonIsTapped(circleNum:val, albumName: savedAlbumName as! String)
                                     }
                             }
@@ -183,16 +182,7 @@ struct SheetView: View {
             .onAppear {
                 showingAlert = true
             }
-            .confirmationDialog("Options", isPresented: $showingAlert, titleVisibility: .visible) {
-                   Button("Restart Demo") {
-//                                       selection = "Red"
-                   }
-
-                    Button("Clear All Albums and Screenshots", role: .destructive) {
-//                                       selection = "Green"
-                   }
-                
-               }
+            .confirmationDialog("Options", isPresented: $showingAlert, titleVisibility: .visible) { }
     }
 }
 
@@ -209,18 +199,14 @@ struct AlertView: View {
                 Button() {
                     if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
                         PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: "\(enteredText) (Screenshot)", isUserCreated: true)
-                        let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count - 1
+                        let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count
                         print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
 
-                        UserDefaults.standard.set("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
-                        UserDefaults.standard.synchronize()
+                        //UserDefaults.standard.setValue("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
+                        //UserDefaults.standard.synchronize()
+                        
+                        setUserDefaultsValue("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
                     }
-                    // Need to establish COUNT for user-created albums
-                    // Iterate over this count, plus two defaults and user-creation category                    
-                    //let defaults = UserDefaults.standard
-                    //defaults.set(enteredText + " (Screenshot)", forKey: "SS-0");
-                    
-                    
                 } label: {
                     Text("Submit")
                 }
@@ -229,6 +215,13 @@ struct AlertView: View {
                     print("User cancelled photo album selection.")
                 }
             }
+    }
+    let userDefaultsQueue = DispatchQueue(label: "com.example.userDefaultsQueue")
+    func setUserDefaultsValue(_ value: Any?, forKey key: String) {
+        userDefaultsQueue.sync {
+            UserDefaults.standard.set(value, forKey: key)
+            UserDefaults.standard.synchronize()
+        }
     }
 }
 
@@ -311,7 +304,9 @@ struct TransitionView: View {
                         stopMotionUpdates()
                     }
                 
-                
+                Button("Photo Permissions", role: .none) {
+                    PhotoHelper().requestPhotoLibraryPermission()
+                    }
                 Button("Options", role: .none) {
                     Text("Delete")
                         .foregroundColor(.white)
