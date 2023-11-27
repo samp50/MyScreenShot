@@ -17,7 +17,7 @@ struct ContentView: View {
     @State private var rectIsEnlarged = false
     @State private var isSheetViewVisible = false
     @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false, false]
-    @State private var backgroundColors: [Color] = [.pink, .green, .blue, .orange, .cyan, .yellow]
+    @State private var backgroundColors: [Color] = [.pink, .green, .blue, .orange, .cyan, .yellow, .mint]
     @State private var motionManager = CMMotionManager()
     @State private var xAcceleration: CGFloat = 0.0
     @State private var yAcceleration: CGFloat = 0.0
@@ -145,13 +145,6 @@ struct RoundedRectangleView: View {
     var body: some View {
         RoundedRectangle(cornerRadius: isEnlarged ? 29.1 : 30)
             .frame(width: isEnlarged ? 100 : 97, height: isEnlarged ? 171.8 : 166.8)
-            /*.offset(x: xAcceleration * 10, y: yAcceleration * 10)
-            .onAppear {
-                startMotionUpdates()
-            }
-            .onDisappear {
-                stopMotionUpdates()
-            }*/
     }
     
     private func startMotionUpdates() {
@@ -188,30 +181,37 @@ struct SheetView: View {
 
 struct AlertView: View {
     @State private var showingAlert = false
+    @State private var showingMaxAlbumsAlert = false
     @State private var enteredText = ""
     var body: some View {
         Text("")
             .onAppear {
                 showingAlert = true
             }
+            .alert(isPresented: $showingMaxAlbumsAlert) {
+                Alert(
+                    title: Text("Cannot add category"),
+                    message: Text("You can only add up to seven screenshot categories."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
             .alert("Enter new photo album name", isPresented: $showingAlert) {
                 TextField("Enter text", text: $enteredText)
                 Button() {
+                    let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count
                     if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                        PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: "\(enteredText) (Screenshot)", isUserCreated: true)
-                        let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count
-                        print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
-
-                        //UserDefaults.standard.setValue("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
-                        //UserDefaults.standard.synchronize()
-                        
-                        setUserDefaultsValue("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
+                        if existingPhotoCategoriesCount < 7 {
+                            PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: "\(enteredText) (Screenshot)", isUserCreated: true)
+                            print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
+                            setUserDefaultsValue("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
+                        } else {
+                            showingMaxAlbumsAlert.toggle()
+                        }
                     }
                 } label: {
                     Text("Submit")
                 }
                 Button("Cancel", role: .cancel) {
-                    // Handle the retry action.
                     print("User cancelled photo album selection.")
                 }
             }
