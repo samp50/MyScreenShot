@@ -106,11 +106,12 @@ struct ContentView: View {
                         if existingPhotoCategoriesCount < 7 {
                             PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: "\(enteredText) (Screenshot)", isUserCreated: true)
                             print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
+                            setUserDefaultsValue("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
                         } else {
                             showingMaxAlbumsAlert.toggle()
                         }
                     }
-                    
+                    enteredText = ""
                 } label: {
                     Text("Submit")
                 }
