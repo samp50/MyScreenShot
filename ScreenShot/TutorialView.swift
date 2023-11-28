@@ -32,6 +32,7 @@ struct TutorialView: View {
                 if currentPage < tutorialPages.count - 1 {
                     currentPage += 1
                 } else {
+                    PhotoHelper().requestPhotoLibraryPermission()
                     UserDefaults.standard.set(true, forKey: "hasSeenTutorial")
                 }
             }) {

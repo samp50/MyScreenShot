@@ -297,10 +297,6 @@ struct TransitionView: View {
                     .onDisappear {
                         stopMotionUpdates()
                     }
-                
-                Button("Photo Permissions", role: .none) {
-                    PhotoHelper().requestPhotoLibraryPermission()
-                    }
                 Button("Options", role: .none) {
                     Text("Delete")
                         .foregroundColor(.white)
