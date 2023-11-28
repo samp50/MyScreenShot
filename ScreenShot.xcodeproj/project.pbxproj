@@ -21,6 +21,7 @@
 		105CDE5B2B07BDEB00C11CA3 /* Bull.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE522B07BDEB00C11CA3 /* Bull.json */; };
 		105CDE5C2B07BDEB00C11CA3 /* Chicken.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE532B07BDEB00C11CA3 /* Chicken.json */; };
 		105CDE5D2B07BDEB00C11CA3 /* Jellyfish.json in Resources */ = {isa = PBXBuildFile; fileRef = 105CDE542B07BDEB00C11CA3 /* Jellyfish.json */; };
+		106AABE52B153F9700F2BDE5 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106AABE42B153F9700F2BDE5 /* TutorialView.swift */; };
 		108422A92ACDB61D000D1486 /* PhotoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108422A82ACDB61D000D1486 /* PhotoHelper.swift */; };
 		10A304FE2B0EA88100CD1DAF /* Baskerville.ttc in Resources */ = {isa = PBXBuildFile; fileRef = 10A304FD2B0EA88100CD1DAF /* Baskerville.ttc */; };
 		10A305002B0EB23700CD1DAF /* Futura.ttc in Resources */ = {isa = PBXBuildFile; fileRef = 10A304FF2B0EB23700CD1DAF /* Futura.ttc */; };
@@ -49,6 +50,7 @@
 		105CDE522B07BDEB00C11CA3 /* Bull.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Bull.json; sourceTree = "<group>"; };
 		105CDE532B07BDEB00C11CA3 /* Chicken.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Chicken.json; sourceTree = "<group>"; };
 		105CDE542B07BDEB00C11CA3 /* Jellyfish.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Jellyfish.json; sourceTree = "<group>"; };
+		106AABE42B153F9700F2BDE5 /* TutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
 		108422A82ACDB61D000D1486 /* PhotoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoHelper.swift; sourceTree = "<group>"; };
 		108422AA2ACDB8D4000D1486 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		10A304FD2B0EA88100CD1DAF /* Baskerville.ttc */ = {isa = PBXFileReference; lastKnownFileType = file; path = Baskerville.ttc; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				100812272AC9F1C4007D16C8 /* Preview Content */,
 				108422A82ACDB61D000D1486 /* PhotoHelper.swift */,
 				10CD9D9C2B05681100DF984B /* LottieView.swift */,
+				106AABE42B153F9700F2BDE5 /* TutorialView.swift */,
 			);
 			path = ScreenShot;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 			files = (
 				100812242AC9F1C3007D16C8 /* ContentView.swift in Sources */,
 				108422A92ACDB61D000D1486 /* PhotoHelper.swift in Sources */,
+				106AABE52B153F9700F2BDE5 /* TutorialView.swift in Sources */,
 				10CD9D9D2B05681100DF984B /* LottieView.swift in Sources */,
 				100812222AC9F1C3007D16C8 /* ScreenShotApp.swift in Sources */,
 				10021C462AD85F1A00C8ACCB /* ScreenshotDetector.swift in Sources */,

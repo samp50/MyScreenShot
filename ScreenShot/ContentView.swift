@@ -27,106 +27,108 @@ struct ContentView: View {
     let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
     let defaults = UserDefaults.standard
     
+    @AppStorage("hasSeenTutorial") var hasSeenTutorial: Bool = false
+        
     var body: some View {
-        ZStack {
-            //HomeView()
-            TransitionView()
-            if isUserMessageVisible {
-                UserMessageView()
-            }
-            /*if isAlertViewVisible {
-                AlertView()
-            }*/
-            // Add animation and proper overlay settings here
-            if screenshotDetector.showView {
-                ZStack {
-                    RoundedRectangleView(isEnlarged: $rectIsEnlarged)
-                        .frame(width: 100, height: 161.8) // RoundedRect dimensions
-                        .foregroundColor(.gray)
-                        .opacity(0.5)
-                        .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
-                        .shadow(radius: 5)
-                        .gesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { _ in
-                                    rectIsEnlarged.toggle()
-                                    screenshotDetector.restartTimer()
-                                }
-                                .onEnded { _ in
-                                    rectIsEnlarged.toggle()
-                                    screenshotDetector.restartTimer()
-                                }
+        if hasSeenTutorial {
+            ZStack {
+                TransitionView()
+                if isUserMessageVisible {
+                    UserMessageView()
+                }
+                // Add animation and proper overlay settings here
+                if screenshotDetector.showView {
+                    ZStack {
+                        RoundedRectangleView(isEnlarged: $rectIsEnlarged)
+                            .frame(width: 100, height: 161.8) // RoundedRect dimensions
+                            .foregroundColor(.gray)
+                            .opacity(0.5)
+                            .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
+                            .shadow(radius: 5)
+                            .gesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { _ in
+                                        rectIsEnlarged.toggle()
+                                        screenshotDetector.restartTimer()
+                                    }
+                                    .onEnded { _ in
+                                        rectIsEnlarged.toggle()
+                                        screenshotDetector.restartTimer()
+                                    }
                             )
-                    ScrollView {
-                        VStack {
-                            // Iterate through all user defaults with SS- prefixes, adding a circle view for each item in dictionary
-                            let existingPhotoCategories = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-")
-                            ForEach(0..<existingPhotoCategories.count, id: \.self) { val in
-                                CircleView(isEnlarged: $circleIsEnlarged[val])
-                                // Rewrite button actions as function for readability
-                                    .foregroundColor(backgroundColors[val])
-                                    .onTapGesture {
-                                        let savedAlbumName = defaults.object(forKey: "SS-\(val)")
-                                        buttonIsTapped(circleNum:val, albumName: savedAlbumName as! String)
-                                    }
-                            }
-                            // Add new category button
-                            ZStack {
-                                CircleView(isEnlarged:$circleIsEnlarged[6])
-                                    .foregroundColor(.white)
-                                    .onTapGesture {
-                                        showingAlert.toggle()
-                                        circleIsEnlarged[6].toggle()
-                                        delay(seconds: 0.25) {
-                                            circleIsEnlarged[6].toggle()
+                        ScrollView {
+                            VStack {
+                                // Iterate through all user defaults with SS- prefixes, adding a circle view for each item in dictionary
+                                let existingPhotoCategories = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-")
+                                ForEach(0..<existingPhotoCategories.count, id: \.self) { val in
+                                    CircleView(isEnlarged: $circleIsEnlarged[val])
+                                    // Rewrite button actions as function for readability
+                                        .foregroundColor(backgroundColors[val])
+                                        .onTapGesture {
+                                            let savedAlbumName = defaults.object(forKey: "SS-\(val)")
+                                            buttonIsTapped(circleNum:val, albumName: savedAlbumName as! String)
                                         }
-                                    }
-                                Rectangle()
-                                    .foregroundColor(.black)
-                                    .frame(width: 20, height: 2)
-                                    .offset(y: 0)
-                                Rectangle()
-                                    .foregroundColor(.black)
-                                    .frame(width: 2, height: 20)
-                                    .offset(x: 0)
+                                }
+                                // Add new category button
+                                ZStack {
+                                    CircleView(isEnlarged:$circleIsEnlarged[6])
+                                        .foregroundColor(.white)
+                                        .onTapGesture {
+                                            showingAlert.toggle()
+                                            circleIsEnlarged[6].toggle()
+                                            delay(seconds: 0.25) {
+                                                circleIsEnlarged[6].toggle()
+                                            }
+                                        }
+                                    Rectangle()
+                                        .foregroundColor(.black)
+                                        .frame(width: 20, height: 2)
+                                        .offset(y: 0)
+                                    Rectangle()
+                                        .foregroundColor(.black)
+                                        .frame(width: 2, height: 20)
+                                        .offset(x: 0)
+                                }
                             }
                         }
-                    }
-                    .frame(width: 120, height: 120)
-                    .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
-                    .background(Color.gray.opacity(0.1))
-                }
-            }
-        }
-        // New photo album alert
-        .alert("Enter new photo album name", isPresented: $showingAlert) {
-            TextField("Enter text", text: $enteredText)
-            Button() {
-                let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count
-                if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
-                    if existingPhotoCategoriesCount < 7 {
-                        PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: "\(enteredText) (Screenshot)", isUserCreated: true)
-                        print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
-                    } else {
-                        showingMaxAlbumsAlert.toggle()
+                        .frame(width: 120, height: 120)
+                        .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
+                        .background(Color.gray.opacity(0.1))
                     }
                 }
-                
-            } label: {
-                Text("Submit")
             }
-            Button("Cancel", role: .cancel) {
-                print("User cancelled photo album selection.")
+            // New photo album alert
+            .alert("Enter new photo album name", isPresented: $showingAlert) {
+                TextField("Enter text", text: $enteredText)
+                Button() {
+                    let existingPhotoCategoriesCount = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-").count
+                    if let mostRecentImage = PhotoHelper().fetchMostRecentImage() {
+                        if existingPhotoCategoriesCount < 7 {
+                            PhotoHelper().addAssetToNewAlbum(asset: mostRecentImage, albumName: "\(enteredText) (Screenshot)", isUserCreated: true)
+                            print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
+                        } else {
+                            showingMaxAlbumsAlert.toggle()
+                        }
+                    }
+                    
+                } label: {
+                    Text("Submit")
+                }
+                Button("Cancel", role: .cancel) {
+                    print("User cancelled photo album selection.")
+                }
             }
-        }
-        // Category limit alert
-        .alert(isPresented: $showingMaxAlbumsAlert) {
-            Alert(
-                title: Text("Cannot add category"),
-                message: Text("You can only add up to seven screenshot categories."),
-                dismissButton: .default(Text("OK"))
-            )
-        }
+            // Category limit alert
+            .alert(isPresented: $showingMaxAlbumsAlert) {
+                Alert(
+                    title: Text("Cannot add category"),
+                    message: Text("You can only add up to seven screenshot categories."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+        } else {
+           TutorialView()
+       }
     }
     
     private func setUserDefaultsValue(_ value: Any?, forKey key: String) {
