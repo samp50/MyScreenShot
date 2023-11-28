@@ -19,6 +19,7 @@ struct ContentView: View {
     @State private var rectIsEnlarged = false
     @State private var isSheetViewVisible = false
     @State private var circleIsEnlarged: [Bool] = [false, false, false, false, false, false, false]
+    @State private var circlePositions: [CGPoint] = Array(repeating: .zero, count: 7)
     @State private var backgroundColors: [Color] = [.pink, .green, .blue, .orange, .cyan, .yellow, .mint]
     @State private var motionManager = CMMotionManager()
     @State private var xAcceleration: CGFloat = 0.0
@@ -39,7 +40,7 @@ struct ContentView: View {
                 // Add animation and proper overlay settings here
                 if screenshotDetector.showView {
                     ZStack {
-                        RoundedRectangleView(isEnlarged: $rectIsEnlarged)
+                        RoundedRectangleView()
                             .frame(width: 100, height: 161.8) // RoundedRect dimensions
                             .foregroundColor(.gray)
                             .opacity(0.5)
@@ -68,6 +69,13 @@ struct ContentView: View {
                                             let savedAlbumName = defaults.object(forKey: "SS-\(val)")
                                             buttonIsTapped(circleNum:val, albumName: savedAlbumName as! String)
                                         }
+                                        /*
+                                        .background(GeometryReader { geometry in
+                                           Color.clear.onAppear {
+                                               circlePositions[val] = geometry.frame(in: .global).origin
+                                           }
+                                       })
+                                       */
                                 }
                                 // Add new category button
                                 ZStack {
@@ -78,8 +86,8 @@ struct ContentView: View {
                                             circleIsEnlarged[6].toggle()
                                             delay(seconds: 0.25) {
                                                 circleIsEnlarged[6].toggle()
+                                                }
                                             }
-                                        }
                                     Rectangle()
                                         .foregroundColor(.black)
                                         .frame(width: 20, height: 2)
@@ -95,6 +103,12 @@ struct ContentView: View {
                         .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
                         .background(Color.gray.opacity(0.1))
                     }
+                }
+                if let indexOfEnlargedCircle = circleIsEnlarged.firstIndex(where: { $0 }) {
+                    ScrollingTextView()
+                        .frame(width: 125, height: 20)
+                        .position(x: UIScreen.main.bounds.size.width - 180, y: 75)
+                        .offset(x: 0, y: CGFloat(circlePositions[indexOfEnlargedCircle].y) - 75)
                 }
             }
             // New photo album alert
@@ -178,14 +192,14 @@ struct CircleView: View {
 }
 
 struct RoundedRectangleView: View {
-    @Binding var isEnlarged: Bool
+    //@Binding var isEnlarged: Bool
     @State private var motionManager = CMMotionManager()
     @State private var xAcceleration: CGFloat = 0.0
     @State private var yAcceleration: CGFloat = 0.0
     
     var body: some View {
-        RoundedRectangle(cornerRadius: isEnlarged ? 29.1 : 30)
-            .frame(width: isEnlarged ? 100 : 97, height: isEnlarged ? 171.8 : 166.8)
+        RoundedRectangle(cornerRadius: 30)
+            .frame(width: 100, height: 171.8)
     }
     
     private func startMotionUpdates() {
@@ -388,5 +402,40 @@ struct ParallaxRectangle: View {
 
     private func stopMotionUpdates() {
         motionManager.stopDeviceMotionUpdates()
+    }
+}
+
+struct ScrollingTextView: View {
+    @State private var text = "SampleTextSampleTextSampleTextSampleText"
+    @State private var isScrolling = false
+
+    var body: some View {
+        HStack {
+            ScrollView(.horizontal, showsIndicators: false) {
+                Text(text)
+                    .font(.system(size: 15))
+                    .frame(width: isScrolling ? nil : 125, height: 20)
+                    .lineLimit(1)
+                    .padding(8)
+                    
+            }
+            .background(RoundedRectangle(cornerRadius: 10).fill(Color.gray))
+            .border(.white)
+            .opacity(0.5)
+            .frame(width: 125, height: 20)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(Animation.linear(duration: Double(text.count) * 0.2).repeatForever()) {
+                        isScrolling = true
+                    }
+                }
+            }
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 14))
+                .foregroundColor(.gray)
+                .opacity(0.5)
+                .padding()
+        }
     }
 }
