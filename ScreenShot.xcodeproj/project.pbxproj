@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1000B9262B1BCF80002C954B /* InitialScreenshotWithButton.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1000B9252B1BCF80002C954B /* InitialScreenshotWithButton.gif */; };
 		10021C462AD85F1A00C8ACCB /* ScreenshotDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10021C452AD85F1A00C8ACCB /* ScreenshotDetector.swift */; };
 		100812222AC9F1C3007D16C8 /* ScreenShotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100812212AC9F1C3007D16C8 /* ScreenShotApp.swift */; };
 		100812242AC9F1C3007D16C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100812232AC9F1C3007D16C8 /* ContentView.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1000B9252B1BCF80002C954B /* InitialScreenshotWithButton.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = InitialScreenshotWithButton.gif; sourceTree = "<group>"; };
 		10021C452AD85F1A00C8ACCB /* ScreenshotDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotDetector.swift; sourceTree = "<group>"; };
 		1008121E2AC9F1C3007D16C8 /* ScreenShot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenShot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		100812212AC9F1C3007D16C8 /* ScreenShotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenShotApp.swift; sourceTree = "<group>"; };
@@ -78,6 +80,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1000B9222B1BCF2F002C954B /* TutorialGIFs */ = {
+			isa = PBXGroup;
+			children = (
+				1000B9252B1BCF80002C954B /* InitialScreenshotWithButton.gif */,
+			);
+			path = TutorialGIFs;
+			sourceTree = "<group>";
+		};
 		100812152AC9F1C3007D16C8 = {
 			isa = PBXGroup;
 			children = (
@@ -99,6 +109,7 @@
 		100812202AC9F1C3007D16C8 /* ScreenShot */ = {
 			isa = PBXGroup;
 			children = (
+				1000B9222B1BCF2F002C954B /* TutorialGIFs */,
 				10A304FC2B0EA86800CD1DAF /* Fonts */,
 				10CD9D9E2B0568C900DF984B /* LottieFiles */,
 				108422AA2ACDB8D4000D1486 /* Info.plist */,
@@ -247,6 +258,7 @@
 				10A305002B0EB23700CD1DAF /* Futura.ttc in Resources */,
 				105CDE5A2B07BDEB00C11CA3 /* Deer.json in Resources */,
 				10CD9DA22B05736100DF984B /* Starfish.json in Resources */,
+				1000B9262B1BCF80002C954B /* InitialScreenshotWithButton.gif in Resources */,
 				10A304FE2B0EA88100CD1DAF /* Baskerville.ttc in Resources */,
 				105CDE562B07BDEB00C11CA3 /* Turtle.json in Resources */,
 				100812262AC9F1C4007D16C8 /* Assets.xcassets in Resources */,

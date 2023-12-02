@@ -7,5 +7,6 @@ target 'ScreenShot' do
 
   # Pods for ScreenShot
   pod 'lottie-ios'
+  pod 'SDWebImageSwiftUI'
 
 end
