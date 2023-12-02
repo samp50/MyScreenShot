@@ -208,18 +208,6 @@ struct RoundedRectangleView: View {
     }
 }
 
-struct SheetView: View {
-    @State private var showingAlert = false
-
-    var body: some View {
-        Text("")
-            .onAppear {
-                showingAlert = true
-            }
-            .confirmationDialog("Options", isPresented: $showingAlert, titleVisibility: .visible) { }
-    }
-}
-
 struct ExampleTextView: View {
     var body: some View {
         Text("EXAMPLE TEXT")
@@ -298,30 +286,14 @@ struct TransitionView: View {
                     .onDisappear {
                         stopMotionUpdates()
                     }
-                Button("Options", role: .none) {
-                    Text("Delete")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 1))
+                Button("Options", role: .destructive) {
+                    presentAlert = true
+                }
+                .confirmationDialog("Are you sure?",
+                    isPresented: $presentAlert) {
+                        Button("Delete all app-created created photos and albums", role: .destructive) {
                     }
-                    .onTapGesture {
-                        presentAlert.toggle()
-                        print("toggled")
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.blue)
-                    .confirmationDialog("Options", isPresented: $presentAlert, titleVisibility: .visible) {
-                           Button("Restart Demo") {
-//                                       selection = "Red"
-                           }
-
-                            Button("Clear All Albums and Screenshots", role: .destructive) {
-//                                       selection = "Green"
-                           }
-                        
-                       }
+                }
             }
         }
         .onAppear {

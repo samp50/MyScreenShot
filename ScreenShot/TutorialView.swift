@@ -12,9 +12,12 @@ struct TutorialView: View {
     @State private var tutorialShown = false
 
     let tutorialPages = [
-        TutorialPage(title: "Welcome to MyApp", imageName: "tutorial1"),
-        TutorialPage(title: "Explore Features", imageName: "tutorial2"),
-        TutorialPage(title: "Get Started Now!", imageName: "tutorial3")
+        TutorialPage(title: "Welcome to Screenshotter", imageName: "TutorialAppIcon", caption: "Screenshotter allows you to organize your screenshots as you take them. This app is basic demonstration of a useful native feature that might be considered in a future iOS release."),
+        TutorialPage(title: "", imageName: "example", caption: "Start by taking a screenshot as the animations play. A widget appears in the corner of your screen with each button representing an album to save your photos."),
+        TutorialPage(title: "", imageName: "tutorial3", caption: "When you tap a button, the screenshot you just took is saved to the corresponding album in your Photos app."),
+        TutorialPage(title: "", imageName: "tutorial3", caption: "The first two categories represent “Mammals” and “Birds”. You can tap the plus icon to name a new category to add images. A new button appears to save screenshots to your new category in the future."),
+        TutorialPage(title: "", imageName: "tutorial3", caption: "When you're done using the app. Press the “Options” button to erase all Screenshotter-created albums and photos from your library. You can also reset your photos permissions or restart this tutorial."),
+        TutorialPage(title: "Let's Get Started", imageName: "tutorial3", caption: "You'll need to tap 'Enable Full Access' to use Screenshotter properly.")
     ]
 
     var body: some View {
@@ -54,6 +57,7 @@ struct TutorialPage: Identifiable {
     let id = UUID()
     let title: String
     let imageName: String
+    let caption: String
 }
 
 struct TutorialPageView: View {
@@ -68,6 +72,11 @@ struct TutorialPageView: View {
 
             Text(tutorialPage.title)
                 .font(.title)
+                .fontWeight(.bold)
+                .padding()
+            
+            Text(tutorialPage.caption)
+                .font(.title3)
                 .fontWeight(.bold)
                 .padding()
         }
