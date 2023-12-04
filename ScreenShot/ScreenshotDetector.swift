@@ -20,7 +20,7 @@ class ScreenshotDetector: ObservableObject {
         let defaults = UserDefaults.standard
         defaults.set("Mammals (Screenshot)", forKey: "SS-0");
         defaults.set("Birds (Screenshot)", forKey: "SS-1");
-        defaults.set("Reptiles (Screenshot)", forKey: "SS-2");
+        //defaults.set("Reptiles (Screenshot)", forKey: "SS-2");
         
         NotificationCenter.default.addObserver(
             forName: UIApplication.userDidTakeScreenshotNotification,

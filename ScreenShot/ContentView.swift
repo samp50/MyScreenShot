@@ -286,9 +286,11 @@ struct TransitionView: View {
                     .onDisappear {
                         stopMotionUpdates()
                     }
-                Button("Options", role: .destructive) {
+                
+                Button("Options") {
                     presentAlert = true
                 }
+                .buttonStyle(.bordered)
                 .confirmationDialog("Are you sure?",
                     isPresented: $presentAlert) {
                         Button("Delete all app-created created photos and albums", role: .destructive) {
