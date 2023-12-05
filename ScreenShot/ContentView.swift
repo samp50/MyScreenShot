@@ -23,6 +23,8 @@ struct ContentView: View {
     @State private var motionManager = CMMotionManager()
     @State private var xAcceleration: CGFloat = 0.0
     @State private var yAcceleration: CGFloat = 0.0
+    @State private var showPhotoDeleteConfimation = false
+    @State private var messageAlbumName = ""
     
     let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
     let defaults = UserDefaults.standard
@@ -32,9 +34,9 @@ struct ContentView: View {
     var body: some View {
         if hasSeenTutorial {
             ZStack {
-                TransitionView()
+                TransitionView(isAlertVisible: $showPhotoDeleteConfimation)
                 if isUserMessageVisible {
-                    UserMessageView()
+                    UserMessageView(albumName: $messageAlbumName)
                 }
                 // Add animation and proper overlay settings here
                 if screenshotDetector.showView {
@@ -127,6 +129,18 @@ struct ContentView: View {
                     dismissButton: .default(Text("OK"))
                 )
             }
+            // Photo/album delete alert
+            .alert(isPresented: $showPhotoDeleteConfimation) {
+                Alert(
+                    title: Text("Confirm Action"),
+                    message: Text("Are you sure you want to delete all Screenshotter-created albums and photos?"),
+                    primaryButton: .destructive(Text("Delete")) {
+                        // PhotoHelper code goes here
+                        PhotoHelper().deleteAllAlbumsAndPhotos()
+                    },
+                    secondaryButton: .cancel(Text("Cancel"))
+                )
+            }
         } else {
            TutorialView()
        }
@@ -158,6 +172,7 @@ struct ContentView: View {
             circleIsEnlarged[circleNum].toggle()
             impactFeedbackgenerator.impactOccurred()
         }
+        messageAlbumName = albumName
         isUserMessageVisible.toggle()
         Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
             isUserMessageVisible.toggle()
@@ -216,16 +231,13 @@ struct ExampleTextView: View {
 }
 
 class UserDefaultsController {
-    //    UserDefaultsController().iterateUserDefaults(withPrefix: "SS-")
     public func iterateUserDefaults(withPrefix prefix: String) -> [Dictionary<String, Any>.Keys.Element] {
         let allKeys = UserDefaults.standard.dictionaryRepresentation().keys
         let filteredKeys = allKeys.filter { $0.hasPrefix(prefix) }
 
-        // Iterate through the filtered keys and retrieve corresponding values
         for key in filteredKeys {
             if let value = UserDefaults.standard.value(forKey: key) {
                 print("Key: \(key), Value: \(value)")
-                // Do something with the key and value
             }
         }
         print(type(of: filteredKeys))
@@ -234,6 +246,7 @@ class UserDefaultsController {
 }
 
 struct UserMessageView: View {
+    @Binding var albumName: String
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 30.0)
@@ -243,7 +256,7 @@ struct UserMessageView: View {
                 .opacity(0.5)
                 .cornerRadius(10)
                 .shadow(radius: 5)
-            Text("Added image to album")
+            Text("Screenshot added to: \n '\(albumName)'")
                 .foregroundColor(.white)
                 .font(.body)
                 .position(x: UIScreen.main.bounds.size.width / 2, y: (UIScreen.main.bounds.size.height / 5) * 4)
@@ -260,6 +273,10 @@ struct TransitionView: View {
     @State var motionManager = CMMotionManager()
     @State var xAcceleration: CGFloat = 0.0
     @State var yAcceleration: CGFloat = 0.0
+    
+    @State private var showPhotoDeleteConfimation = false
+    
+    @Binding var isAlertVisible: Bool
 
     var body: some View {
         ZStack {
@@ -293,8 +310,9 @@ struct TransitionView: View {
                 .buttonStyle(.bordered)
                 .confirmationDialog("Are you sure?",
                     isPresented: $presentAlert) {
-                        Button("Delete all app-created created photos and albums", role: .destructive) {
-                    }
+                        Button("Delete app-created created photos and albums", role: .destructive) {
+                            isAlertVisible = true
+                        }
                 }
             }
         }

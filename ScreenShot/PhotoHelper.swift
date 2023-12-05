@@ -8,6 +8,7 @@
 import Foundation
 import Photos
 import UIKit
+import SwiftUI
 
 // To-do: Keep a text list of screenshots created with this app
 //        Check if potential album name already exists, cancel if so
@@ -15,6 +16,74 @@ import UIKit
 //        in memory for easy retrieval
 
 class PhotoHelper {
+    
+    func deleteAllAlbumsAndPhotos() {
+        let defaults = UserDefaults.standard
+        let existingAlbums = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-")
+        for val in existingAlbums {
+            let savedAlbumName = defaults.object(forKey: (val)).unsafelyUnwrapped
+            print(savedAlbumName)
+            // Delete the photos in each album, then delete the album
+            deletePhotosAndAlbum(albumName: savedAlbumName as! String)
+        }
+    }
+    
+    func deletePhotosAndAlbum(albumName: String) {
+        // Fetch the album using the provided name
+        print("Function album name: \(albumName)")
+        if let album = getAssetAlbum(forAlbumName: albumName) {
+            // Fetch all photos in the album
+            let assets = PHAsset.fetchAssets(in: album, options: nil)
+
+            // Delete each photo
+            PHPhotoLibrary.shared().performChanges {
+                PHAssetChangeRequest.deleteAssets(assets)
+            } completionHandler: { success, error in
+                if success {
+                    // If photos are deleted successfully, delete the album
+                    PHPhotoLibrary.shared().performChanges {
+                        PHAssetCollectionChangeRequest.deleteAssetCollections([album] as NSFastEnumeration)
+                    } completionHandler: { _, _ in
+                        print("Album and photos deleted successfully.")
+                    }
+                } else {
+                    print("Error deleting photos: \(error?.localizedDescription ?? "")")
+                }
+            }
+        } else {
+            print("Album not found.")
+        }
+    }
+    
+    func getAssetAlbum(forAlbumName albumName: String) -> PHAssetCollection? {
+            let userAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)
+
+            for index in 0..<userAlbums.count {
+                let album = userAlbums[index]
+                if album.localizedTitle == albumName {
+                    return album
+                }
+            }
+
+            return nil
+        }
+    
+    func getAssetCollection(forStringIdentifier identifier: String) -> PHAssetCollection? {
+        // Fetch all user albums
+        let userAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)
+        
+        // Iterate through the albums to find the one with the matching identifier
+        for index in 0..<userAlbums.count {
+            let album = userAlbums[index]
+            if album.localIdentifier == identifier {
+                return album
+            }
+        }
+        
+        // If no match is found, return nil
+        return nil
+    }
+    
     func addImageToAlbum(image: PHAsset, albumName: String) {
         if doesAlbumExist(albumTitle: albumName) {
             print("Adding to preexisting album: \(albumName)")
