@@ -150,7 +150,6 @@ struct ContentView: View {
                     secondaryButton: .cancel(Text("Cancel"))
                 )
             }
-        
         } else {
            TutorialView()
        }
