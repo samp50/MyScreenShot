@@ -23,7 +23,7 @@ struct ContentView: View {
     @State private var motionManager = CMMotionManager()
     @State private var xAcceleration: CGFloat = 0.0
     @State private var yAcceleration: CGFloat = 0.0
-    @State private var showPhotoDeleteConfimation = false
+    @State private var isDeleteAlertVisible = false
     @State private var showPhotoPermissionsInstructions = false
     @State private var messageAlbumName = ""
     
@@ -35,7 +35,7 @@ struct ContentView: View {
     var body: some View {
         if hasSeenTutorial {
             ZStack {
-                TransitionView(isDeleteAlertVisible: $showPhotoDeleteConfimation, showPhotoPermissionsInstructions: $showPhotoPermissionsInstructions)
+                TransitionView(isDeleteAlertVisible: $isDeleteAlertVisible, showPhotoPermissionsInstructions: $showPhotoPermissionsInstructions)
                 if isUserMessageVisible {
                     UserMessageView(albumName: $messageAlbumName)
                 }
@@ -136,6 +136,18 @@ struct ContentView: View {
                     title: Text("Photo permissions are disabled"),
                     message: Text("To enable photo permissions: Open Settings -> Screenshotter -> Photos -> Full Access"),
                     dismissButton: .default(Text("OK"))
+                )
+            }
+            // Photo/album delete alert
+            .alert(isPresented: $isDeleteAlertVisible) {
+                Alert(
+                    title: Text("Confirm Action"),
+                    message: Text("Are you sure you want to delete all Screenshotter-created albums and photos?"),
+                    primaryButton: .destructive(Text("Delete")) {
+                        // PhotoHelper code goes here
+                        PhotoHelper().deleteAllAlbumsAndPhotos()
+                    },
+                    secondaryButton: .cancel(Text("Cancel"))
                 )
             }
         
@@ -313,7 +325,7 @@ struct TransitionView: View {
                             showPhotoPermissionsInstructions.toggle()
                         }
                         Button("Delete app-created photos and albums", role: .destructive) {
-                            showPhotoDeleteConfimation.toggle()
+                            isDeleteAlertVisible.toggle()
                         }
                     }
             }
