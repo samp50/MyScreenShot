@@ -17,7 +17,8 @@ import SwiftUI
 
 class PhotoHelper {
     
-    func deleteAllAlbumsAndPhotos() {
+    func deleteAllAlbumsAndPhotos(completion: @escaping (Bool) -> Void) {
+        let success = true
         let defaults = UserDefaults.standard
         let existingAlbums = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-")
         for val in existingAlbums {
@@ -26,6 +27,8 @@ class PhotoHelper {
             // Delete the photos in each album, then delete the album
             deletePhotosAndAlbum(albumName: savedAlbumName as! String)
         }
+        sleep(4)
+        completion(success)
     }
     
     func deletePhotosAndAlbum(albumName: String) {

@@ -35,7 +35,7 @@ struct ContentView: View {
     var body: some View {
         if hasSeenTutorial {
             ZStack {
-                TransitionView(isDeleteAlertVisible: $isDeleteAlertVisible, showPhotoPermissionsInstructions: $showPhotoPermissionsInstructions)
+                TransitionView(isDeleteAlertVisible: $isDeleteAlertVisible, showPhotoPermissionsInstructions: $showPhotoPermissionsInstructions, isUserMessageVisible: $isUserMessageVisible, messageAlbumName: $messageAlbumName)
                 if isUserMessageVisible {
                     UserMessageView(albumName: $messageAlbumName)
                 }
@@ -111,7 +111,12 @@ struct ContentView: View {
                             print("existingPhotoCategoriesCount is: \(existingPhotoCategoriesCount)")
                             setUserDefaultsValue("\(enteredText) (Screenshot)", forKey: "SS-\(existingPhotoCategoriesCount)")
                         } else {
-                            showingMaxAlbumsAlert.toggle()
+                            messageAlbumName = "You can only add up to \n seven image categories."
+                            isUserMessageVisible.toggle()
+                            Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+                                isUserMessageVisible.toggle()
+                            }
+                            
                         }
                     }
                     enteredText = ""
@@ -122,30 +127,22 @@ struct ContentView: View {
                     print("User cancelled photo album selection.")
                 }
             }
-            // Category limit alert
-            .alert(isPresented: $showingMaxAlbumsAlert) {
-                Alert(
-                    title: Text("Cannot add category"),
-                    message: Text("You can only add up to seven screenshot categories."),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
-            // Instructions for enabling photo permissions
-            .alert(isPresented: $showPhotoPermissionsInstructions) {
-                Alert(
-                    title: Text("Photo permissions are disabled"),
-                    message: Text("To enable photo permissions: Open Settings -> Screenshotter -> Photos -> Full Access"),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
             // Photo/album delete alert
             .alert(isPresented: $isDeleteAlertVisible) {
                 Alert(
                     title: Text("Confirm Action"),
                     message: Text("Are you sure you want to delete all Screenshotter-created albums and photos?"),
                     primaryButton: .destructive(Text("Delete")) {
-                        // PhotoHelper code goes here
-                        PhotoHelper().deleteAllAlbumsAndPhotos()
+                        PhotoHelper().deleteAllAlbumsAndPhotos() { success in
+                            if success {
+                                messageAlbumName = "Deleted all app-created \n photos and albums."
+                                isUserMessageVisible.toggle()
+                                Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+                                    isUserMessageVisible.toggle()
+                                }
+                            }
+                        }
+                        
                     },
                     secondaryButton: .cancel(Text("Cancel"))
                 )
@@ -162,7 +159,6 @@ struct ContentView: View {
             UserDefaults.standard.synchronize()
         }
     }
-    
     
     private func delay(seconds: Double, closure: @escaping () -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
@@ -181,7 +177,7 @@ struct ContentView: View {
             circleIsEnlarged[circleNum].toggle()
             impactFeedbackgenerator.impactOccurred()
         }
-        messageAlbumName = albumName
+        messageAlbumName = "Screenshot added to: \n '\(albumName)'"
         isUserMessageVisible.toggle()
         Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
             isUserMessageVisible.toggle()
@@ -265,7 +261,7 @@ struct UserMessageView: View {
                 .opacity(0.5)
                 .cornerRadius(10)
                 .shadow(radius: 5)
-            Text("Screenshot added to: \n '\(albumName)'")
+            Text(albumName)
                 .foregroundColor(.white)
                 .font(.body)
                 .position(x: UIScreen.main.bounds.size.width / 2, y: (UIScreen.main.bounds.size.height / 5) * 4)
@@ -287,6 +283,8 @@ struct TransitionView: View {
     
     @Binding var isDeleteAlertVisible: Bool
     @Binding var showPhotoPermissionsInstructions: Bool
+    @Binding var isUserMessageVisible: Bool
+    @Binding var messageAlbumName: String
 
     var body: some View {
         ZStack {
@@ -321,10 +319,15 @@ struct TransitionView: View {
                     .confirmationDialog("Are you sure?",
                         isPresented: $presentAlert) {
                         Button("Enable photo permissions") {
-                            showPhotoPermissionsInstructions.toggle()
+                            messageAlbumName = "Enable photo permissions \n in Settings"
+                            isUserMessageVisible.toggle()
+                            Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+                                isUserMessageVisible.toggle()
+                            }
                         }
                         Button("Delete app-created photos and albums", role: .destructive) {
                             isDeleteAlertVisible.toggle()
+                        
                         }
                     }
             }
