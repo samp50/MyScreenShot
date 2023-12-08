@@ -48,17 +48,6 @@ struct ContentView: View {
                             .opacity(0.5)
                             .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
                             .shadow(radius: 5)
-                            .gesture(
-                                DragGesture(minimumDistance: 0)
-                                    .onChanged { _ in
-                                        rectIsEnlarged.toggle()
-                                        screenshotDetector.restartTimer()
-                                    }
-                                    .onEnded { _ in
-                                        rectIsEnlarged.toggle()
-                                        screenshotDetector.restartTimer()
-                                    }
-                            )
                         ScrollView {
                             VStack {
                                 // Iterate through all user defaults with SS- prefixes, adding a circle view for each item in dictionary
@@ -70,6 +59,7 @@ struct ContentView: View {
                                         .onTapGesture {
                                             let savedAlbumName = defaults.object(forKey: "SS-\(val)")
                                             buttonIsTapped(circleNum:val, albumName: savedAlbumName as! String)
+                                            screenshotDetector.restartTimer()
                                         }
                                 }
                                 // Add new category button
@@ -82,6 +72,7 @@ struct ContentView: View {
                                             delay(seconds: 0.25) {
                                                 circleIsEnlarged[6].toggle()
                                             }
+                                            screenshotDetector.restartTimer()
                                         }
                                     Rectangle()
                                         .foregroundColor(.black)
@@ -93,6 +84,17 @@ struct ContentView: View {
                                         .offset(x: 0)
                                 }
                             }
+                            .gesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { _ in
+                                        rectIsEnlarged.toggle()
+                                        screenshotDetector.restartTimer()
+                                    }
+                                    .onEnded { _ in
+                                        rectIsEnlarged.toggle()
+                                        screenshotDetector.restartTimer()
+                                    }
+                            )
                         }
                         .frame(width: 120, height: 120)
                         .position(x: UIScreen.main.bounds.size.width - 60, y: 75)
@@ -135,7 +137,7 @@ struct ContentView: View {
                     primaryButton: .destructive(Text("Delete")) {
                         PhotoHelper().deleteAllAlbumsAndPhotos() { success in
                             if success {
-                                messageAlbumName = "Deleted all app-created \n photos and albums."
+                                messageAlbumName = "Deleting all app-created \n photos and albums..."
                                 isUserMessageVisible.toggle()
                                 Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
                                     isUserMessageVisible.toggle()
