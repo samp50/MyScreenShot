@@ -36,12 +36,10 @@ class PhotoHelper {
             // Fetch all photos in the album
             let assets = PHAsset.fetchAssets(in: album, options: nil)
 
-            // Delete each photo
             PHPhotoLibrary.shared().performChanges {
                 PHAssetChangeRequest.deleteAssets(assets)
             } completionHandler: { success, error in
                 if success {
-                    // If photos are deleted successfully, delete the album
                     PHPhotoLibrary.shared().performChanges {
                         PHAssetCollectionChangeRequest.deleteAssetCollections([album] as NSFastEnumeration)
                     } completionHandler: { _, _ in
@@ -70,10 +68,8 @@ class PhotoHelper {
         }
     
     func getAssetCollection(forStringIdentifier identifier: String) -> PHAssetCollection? {
-        // Fetch all user albums
         let userAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)
         
-        // Iterate through the albums to find the one with the matching identifier
         for index in 0..<userAlbums.count {
             let album = userAlbums[index]
             if album.localIdentifier == identifier {
@@ -81,7 +77,6 @@ class PhotoHelper {
             }
         }
         
-        // If no match is found, return nil
         return nil
     }
     
@@ -94,7 +89,6 @@ class PhotoHelper {
         }
     }
     
-    // Adds assets to new album without making a duplicate
     func addAssetToNewAlbum(asset: PHAsset, albumName: String, isUserCreated: Bool?) {
         PHPhotoLibrary.shared().performChanges {
             let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
@@ -109,18 +103,15 @@ class PhotoHelper {
     }
     
     func doesAlbumExist(albumTitle: String) -> Bool {
-        // Create a predicate to search for the album by title
         let albumFetchOptions = PHFetchOptions()
         albumFetchOptions.predicate = NSPredicate(format: "title = %@", albumTitle)
         
-        // Fetch user's albums
         let userAlbums = PHAssetCollection.fetchAssetCollections(
             with: .album,
             subtype: .any,
             options: albumFetchOptions
         )
         
-        // If there's at least one album with the given title, return true
         return userAlbums.count > 0
     }
     
@@ -151,9 +142,7 @@ class PhotoHelper {
                     }
                 })
                 
-            } else {
-                // Handle the case where the user denied access
-            }
+            } else { }
         }
         
     }
@@ -190,8 +179,6 @@ class PhotoHelper {
     }
     
     func addAssetToAlbum(asset: PHAsset, albumName: String) {
-        // Adds assets to already existing album
-        // Fetch the photo album by its name
         let fetchOptions = PHFetchOptions()
         fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
         let album = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
@@ -216,13 +203,10 @@ class PhotoHelper {
     func handleTap(for index: Int) {
         switch index {
         case 0:
-            // Handle tap for the first item
             print("Tapped Item 1")
         case 1:
-            // Handle tap for the second item
             print("Tapped Item 2")
         case 2:
-            // Handle tap for the third item
             print("Tapped Item 3")
         default:
             break
@@ -235,10 +219,8 @@ class PhotoHelper {
 
         switch status {
         case .authorized:
-            // User has already granted access
             print("Access to photo library is already authorized.")
         case .denied, .restricted:
-            // User has denied or restricted access
             print("Access to photo library is denied or restricted. Please enable in Settings.")
         case .notDetermined:
             // Request access

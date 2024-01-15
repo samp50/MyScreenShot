@@ -44,7 +44,7 @@
 /* Begin PBXFileReference section */
 		1000B9252B1BCF80002C954B /* InitialScreenshotWithButton.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = InitialScreenshotWithButton.gif; sourceTree = "<group>"; };
 		10021C452AD85F1A00C8ACCB /* ScreenshotDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotDetector.swift; sourceTree = "<group>"; };
-		1008121E2AC9F1C3007D16C8 /* ScreenShot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScreenShot.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1008121E2AC9F1C3007D16C8 /* MyScreenshot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyScreenshot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		100812212AC9F1C3007D16C8 /* ScreenShotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenShotApp.swift; sourceTree = "<group>"; };
 		100812232AC9F1C3007D16C8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		100812252AC9F1C4007D16C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 		1008121F2AC9F1C3007D16C8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1008121E2AC9F1C3007D16C8 /* ScreenShot.app */,
+				1008121E2AC9F1C3007D16C8 /* MyScreenshot.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,9 +201,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1008121D2AC9F1C3007D16C8 /* ScreenShot */ = {
+		1008121D2AC9F1C3007D16C8 /* MyScreenshot */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1008122C2AC9F1C4007D16C8 /* Build configuration list for PBXNativeTarget "ScreenShot" */;
+			buildConfigurationList = 1008122C2AC9F1C4007D16C8 /* Build configuration list for PBXNativeTarget "MyScreenshot" */;
 			buildPhases = (
 				0EF444159CBCC71A7D1CBBBC /* [CP] Check Pods Manifest.lock */,
 				1008121A2AC9F1C3007D16C8 /* Sources */,
@@ -215,11 +215,11 @@
 			);
 			dependencies = (
 			);
-			name = ScreenShot;
+			name = MyScreenshot;
 			packageProductDependencies = (
 			);
 			productName = ScreenShot;
-			productReference = 1008121E2AC9F1C3007D16C8 /* ScreenShot.app */;
+			productReference = 1008121E2AC9F1C3007D16C8 /* MyScreenshot.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -252,7 +252,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1008121D2AC9F1C3007D16C8 /* ScreenShot */,
+				1008121D2AC9F1C3007D16C8 /* MyScreenshot */,
 			);
 		};
 /* End PBXProject section */
@@ -408,6 +408,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = MyScreenshot;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -464,6 +465,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = MyScreenshot;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
@@ -474,18 +476,20 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8846DE0FC54A0EE8416B11B4 /* Pods-ScreenShot.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "";
-				"ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphoneos*]" = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ScreenShot/Preview Content\"";
-				DEVELOPMENT_TEAM = 6J5TDM8V3C;
+				DEVELOPMENT_TEAM = 62F8U82P67;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ScreenShot/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyScreenshot;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo Library Access Warning";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -497,8 +501,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.samuelphillips.ScreenShot;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eyeball.MyScreenshot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -512,17 +517,20 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9E250201DDDB2BA8C710FE42 /* Pods-ScreenShot.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ScreenShot/Preview Content\"";
-				DEVELOPMENT_TEAM = 6J5TDM8V3C;
+				DEVELOPMENT_TEAM = 62F8U82P67;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ScreenShot/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyScreenshot;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Photo Library Access Warning";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -534,8 +542,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.samuelphillips.ScreenShot;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eyeball.MyScreenshot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -557,7 +566,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1008122C2AC9F1C4007D16C8 /* Build configuration list for PBXNativeTarget "ScreenShot" */ = {
+		1008122C2AC9F1C4007D16C8 /* Build configuration list for PBXNativeTarget "MyScreenshot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1008122D2AC9F1C4007D16C8 /* Debug */,

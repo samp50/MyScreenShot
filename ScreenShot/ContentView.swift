@@ -50,7 +50,6 @@ struct ContentView: View {
                             .shadow(radius: 5)
                         ScrollView {
                             VStack {
-                                // Iterate through all user defaults with SS- prefixes, adding a circle view for each item in dictionary
                                 let existingPhotoCategories = UserDefaultsController().iterateUserDefaults(withPrefix: "SS-")
                                 ForEach(0..<existingPhotoCategories.count, id: \.self) { val in
                                     CircleView(isEnlarged: $circleIsEnlarged[val])
@@ -62,7 +61,6 @@ struct ContentView: View {
                                             screenshotDetector.restartTimer()
                                         }
                                 }
-                                // Add new category button
                                 ZStack {
                                     CircleView(isEnlarged:$circleIsEnlarged[6])
                                         .foregroundColor(.white)
@@ -133,7 +131,7 @@ struct ContentView: View {
             .alert(isPresented: $isDeleteAlertVisible) {
                 Alert(
                     title: Text("Confirm Action"),
-                    message: Text("Are you sure you want to delete all Screenshotter-created albums and photos?"),
+                    message: Text("Are you sure you want to delete all MyScreenshot-created albums and photos?"),
                     primaryButton: .destructive(Text("Delete")) {
                         PhotoHelper().deleteAllAlbumsAndPhotos() { success in
                             if success {
