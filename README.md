@@ -15,3 +15,12 @@ MyScreenShot uses SDWebImageSwiftUI and Lottie-iOS within CocoaPods.
 
 # Building 
 
+Downloading and building MyScreenShot is simple. Make sure you have at least Xcode 15 and Cocoapods 1.14.0 installed and are using an Apple Silicon machine:
+
+```
+git clone https://github.com/samuelcphillips/MyScreenShot.git
+cd MyScreenShot
+pod install
+```
+
+At this point, make sure to open the .xcworksfolder file, NOT the .xcodeproj file.
