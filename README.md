@@ -25,4 +25,4 @@ pod install
 
 At this point, make sure to open the .xcworksfolder file, NOT the .xcodeproj file.
 
-This app lets you explore hoe a persistent, in-line screenshot organizer would function on iOS. When you're done trying MyScreenShot, make sure to use the cleanup feature to automatically delete any albums and photos saved from the app. 
+This app lets you explore how a persistent, in-line screenshot organizer would function on iOS. When you're done trying MyScreenShot, make sure to use the cleanup feature to automatically delete any albums and photos saved from the app. 
