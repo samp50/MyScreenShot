@@ -8,12 +8,10 @@ MyScreenShot allows you to organize your screenshots as you take them. This app 
 
 # Demo 
 
-![alt text width=249 height=538](https://github.com/samjapan2014/ScreenShot/blob/main/demo.gif?raw=true)
-<img src="[URL_TO_YOUR_IMAGE](https://github.com/samjapan2014/ScreenShot/blob/main/demo.gif?raw=true)" alt="Image Description" width="300" height="200">
+![alt text width=249 height=538](https://github.com/samjapan2014/ScreenShot/blob/main/ezgif-5-f6f034819c.gif?raw=true)
 ## Dependencies
 
 MyScreenShot uses SDWebImageSwiftUI and Lottie-iOS within CocoaPods.
 
 # Building 
-
 
